@@ -2,7 +2,7 @@ import type { ContentLibrary } from '../content/schema';
 import type { Rng } from './rng';
 
 export type PlayerId = string;
-export type GameId = 'reverse' | 'quip' | 'bluff' | 'sketch';
+export type GameId = 'reverse' | 'quip' | 'bluff' | 'sketch' | 'oddone' | 'hottakes' | 'doodle';
 
 export interface Player {
   id: PlayerId;

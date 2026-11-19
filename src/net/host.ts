@@ -241,6 +241,8 @@ export class HostRoom {
         view.round,
         view.index,
         view.matchupIndex,
+        view.step,
+        view.chain,
         module.privateView(game.state, p.id),
       ]);
       let plan = this.botPlans.get(p.id);

@@ -19,6 +19,12 @@ body.gn {
   --bluff-2: #6aa8ff;
   --sketch: #ff6b9a;
   --sketch-2: #ffc23d;
+  --oddone: #ff8a3d;
+  --oddone-2: #9b7bff;
+  --hottakes: #ff5c5c;
+  --hottakes-2: #ffc23d;
+  --doodle: #4dabf7;
+  --doodle-2: #ff6b9a;
   --r: 18px;
   background: var(--bg);
   color: var(--ink);
@@ -63,6 +69,18 @@ body.gn #app {
 .game-sketch {
   --a: var(--sketch);
   --a2: var(--sketch-2);
+}
+.game-oddone {
+  --a: var(--oddone);
+  --a2: var(--oddone-2);
+}
+.game-hottakes {
+  --a: var(--hottakes);
+  --a2: var(--hottakes-2);
+}
+.game-doodle {
+  --a: var(--doodle);
+  --a2: var(--doodle-2);
 }
 
 .gn h1,
@@ -304,8 +322,25 @@ body.gn #app {
 }
 
 .gn-cards.compact {
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1em;
+  grid-template-columns: repeat(auto-fill, minmax(12.5em, 1fr));
+  gap: 0.9em;
+}
+
+.gn-cards.compact .gn-card-art {
+  aspect-ratio: 2 / 1;
+  padding: 4% 12%;
+}
+
+.gn-cards.compact .gn-card-body {
+  padding: 0.7em 0.9em 0.9em;
+}
+
+.gn-cards.compact .gn-card h3 {
+  font-size: 1.15em;
+}
+
+.gn-cards.compact .gn-card-meta {
+  display: none;
 }
 
 .gn-card {
@@ -1790,4 +1825,273 @@ body.gn input:focus,
 body.gn textarea:focus {
   background: var(--surface-2);
   color: var(--ink);
+}
+
+/* ---------- Odd One Out ---------- */
+
+.gn-clues {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14em, 1fr));
+  gap: 1em;
+}
+
+.gn-clue {
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  padding: 1em 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  animation: gn-slide 0.45s ease both;
+  animation-delay: calc(var(--i) * 0.07s);
+}
+
+.still .gn-clue,
+.still .gn-entry,
+.still .gn-bar-row {
+  animation: none;
+}
+
+.gn-clue.odd {
+  border-color: var(--a);
+  background: color-mix(in srgb, var(--a) 14%, var(--surface));
+}
+
+.gn-clue-text {
+  font-size: 1.6em;
+  font-weight: 750;
+}
+
+.gn-option-tag.odd {
+  color: var(--a);
+}
+
+.gn-accent {
+  color: var(--a);
+}
+
+.gn-secret {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  text-align: center;
+  background: var(--surface);
+  border: 2px solid var(--a, var(--accent));
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.gn-secret b {
+  font-size: 2em;
+  font-weight: 800;
+}
+
+.gn-secret small {
+  color: var(--muted);
+}
+
+.gn-secret.odd b {
+  font-size: 1.3em;
+  color: var(--a);
+}
+
+/* ---------- Hot Takes ---------- */
+
+.gn-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-weight: 650;
+  font-size: 1.1em;
+}
+
+.gn-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+}
+
+.gn-bar-row {
+  display: grid;
+  grid-template-columns: 12em 1fr auto;
+  align-items: center;
+  gap: 1em;
+  animation: gn-slide 0.45s ease both;
+  animation-delay: calc(var(--i) * 0.1s);
+}
+
+.gn-bar-fill {
+  height: 2.2em;
+  width: calc(var(--n) / var(--total) * 100%);
+  min-width: 2.2em;
+  border-radius: 10px;
+  background: var(--surface-3);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 0.7em;
+  font-weight: 800;
+  box-sizing: border-box;
+}
+
+.gn-bar-row.top .gn-bar-fill {
+  background: var(--a);
+  color: #101218;
+}
+
+.gn-scale {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  gap: 0.4em;
+  align-items: end;
+  min-height: 9em;
+  padding-bottom: 0.2em;
+}
+
+.gn-scale-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.gn-scale-stack {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.25em;
+  position: relative;
+  z-index: 1;
+}
+
+.gn-scale-n {
+  width: 100%;
+  text-align: center;
+  font-weight: 800;
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 0.3em 0;
+}
+
+.gn-scale-avg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc((var(--avg) + 0.5) / 11 * 100%);
+  border-left: 3px dashed var(--a);
+  opacity: 0.8;
+}
+
+.gn-scale-avg span {
+  position: absolute;
+  top: -0.2em;
+  left: 0.4em;
+  font-weight: 800;
+  color: var(--a);
+  white-space: nowrap;
+}
+
+.gn-guesses {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em 1.4em;
+  font-size: 1.1em;
+}
+
+.gn-guesses li {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.gn-choices.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.gn-slider-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 650;
+}
+
+.gn-slider-value {
+  color: var(--a, var(--accent));
+  font-size: 1.3em;
+  margin-left: 6px;
+}
+
+.gn-slider {
+  width: 100%;
+  height: 44px;
+  accent-color: var(--a, var(--accent));
+}
+
+/* ---------- Telephone Doodle ---------- */
+
+.gn-chain {
+  display: flex;
+  gap: 1em;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.gn-entry {
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  padding: 0.8em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  width: 13em;
+  animation: gn-pop 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+.gn-entry.big {
+  width: min(32em, 60%);
+  border-color: var(--a);
+}
+
+.gn-entry .gn-drawing {
+  border-radius: 12px;
+  animation: none;
+}
+
+.gn-entry-text {
+  font-size: 1.25em;
+  font-weight: 750;
+  text-wrap: balance;
+}
+
+.gn-entry.big .gn-entry-text {
+  font-size: 2em;
+}
+
+.gn-entry-empty {
+  color: var(--muted);
+  font-style: italic;
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+}
+
+.gn-chain.all .gn-entry {
+  width: 15em;
+}
+
+.gn-choice .gn-drawing {
+  width: 100%;
+  border-radius: 10px;
+  animation: none;
+}
+
+.gn-hint.center {
+  text-align: center;
 }

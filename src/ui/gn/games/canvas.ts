@@ -63,7 +63,12 @@ const coordCount = (strokes: Drawing) => strokes.reduce((n, s) => n + s.p.length
  * a re-render (or a reconnect) keeps the drawing. Strokes are simplified as they're drawn and
  * sent only on submit.
  */
-export function drawPad(key: string, onSubmit: (drawing: Drawing) => void, disabled: boolean): HTMLElement {
+export function drawPad(
+  key: string,
+  onSubmit: (drawing: Drawing) => void,
+  disabled: boolean,
+  maxCoords = MAX_COORDS,
+): HTMLElement {
   const pad = pads.get(key) ?? { strokes: [], color: 0, size: 1 };
   pads.set(key, pad);
   const canvas = h('canvas', {
@@ -82,7 +87,7 @@ export function drawPad(key: string, onSubmit: (drawing: Drawing) => void, disab
   };
   canvas.addEventListener('pointerdown', (e) => {
     if (disabled) return;
-    if (pad.strokes.length >= MAX_STROKES || coordCount(pad.strokes) >= MAX_COORDS - 200)
+    if (pad.strokes.length >= MAX_STROKES || coordCount(pad.strokes) >= maxCoords - 200)
       return toast('That’s a lot of ink! Submit or undo a bit.');
     canvas.setPointerCapture(e.pointerId);
     live = { c: pad.color, s: pad.size, p: point(e) };
@@ -96,7 +101,7 @@ export function drawPad(key: string, onSubmit: (drawing: Drawing) => void, disab
     const dx = x - p[p.length - 2]!;
     const dy = y - p[p.length - 1]!;
     if (dx * dx + dy * dy < 9) return; // skip points closer than 3 units
-    if (coordCount(pad.strokes) + p.length >= MAX_COORDS - 2) return;
+    if (coordCount(pad.strokes) + p.length >= maxCoords - 2) return;
     p.push(x, y);
     redraw();
   });

@@ -4,12 +4,15 @@ Party games on one big screen, played with your phones, in the spirit of Jackbox
 laptop plugged into the TV, create a room, and everyone joins from their phone's browser with
 the room code or QR code. No app and no accounts. Players stay in the room between games.
 
-| Game            | What happens                                                                                                                       | Players |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| **Reverse**     | Everyone records secret words. Each round you get someone else's word played backwards, copy the sound, flip your copy, and guess. | 2–10    |
-| **Quip Battle** | Two players answer each ridiculous prompt; everyone else votes for the funnier one. Final round: everyone answers one prompt.      | 3–10    |
-| **Bluff It**    | Write a believable fake answer to strange trivia, then find the real answer among everyone's lies.                                 | 2–10    |
-| **Sketch It**   | Draw a secret absurd prompt on your phone, write fake titles for each other's drawings, then spot the real one.                    | 3–10    |
+| Game                 | What happens                                                                                                                                                   | Players |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| **Reverse**          | Everyone records secret words. Each round you get someone else's word played backwards, copy the sound, flip your copy, and guess.                             | 2–10    |
+| **Quip Battle**      | Two players answer each ridiculous prompt; everyone else votes for the funnier one. Final round: everyone answers one prompt.                                  | 3–10    |
+| **Bluff It**         | Write a believable fake answer to strange trivia, then find the real answer among everyone's lies.                                                             | 2–10    |
+| **Sketch It**        | Draw a secret absurd prompt on your phone, write fake titles for each other's drawings, then spot the real one.                                                | 3–10    |
+| **Odd One Out**      | Everyone gets the same secret word except one player. Give a clue, vote out the faker; if caught, they can still steal points by guessing the word.            | 3–10    |
+| **Hot Takes**        | "Who's most likely to…?" (score for picking who the group picks) and 0–10 opinion questions (rate it, guess the group average).                                | 3–10    |
+| **Telephone Doodle** | Write a phrase; the next phone draws it, the next guesses the drawing, and so on. The TV plays every chain back and everyone votes for their favourite moment. | 3–10    |
 
 **Classic Esrever**, the original two-player Reverse on one phone or two, is still there:
 "Play classic Reverse" on the home page (`/?mode=classic`). Old `?room=` links still open it.

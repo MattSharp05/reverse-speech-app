@@ -376,6 +376,31 @@ if (gameWords) {
   });
 } else warn('game-words');
 
+// ---- Odd One Out and Hot Takes (originals) --------------------------------------
+
+const party = {
+  id: 'original-party',
+  title: 'Game Night originals (Odd One Out, Hot Takes)',
+  source: 'Written for Game Night',
+  license: 'Same as this project',
+  oddone: lines('oddone.txt').map((line) => {
+    const [category, maturity, word, decoy] = line.split('|').map((s) => s.trim());
+    return { id: id('o', `${word}/${decoy}`), category, maturity, word, decoy, source: 'original' };
+  }),
+  hottakes: lines('hottakes.txt').map((line) => {
+    const [kind, maturity, text, low, high] = line.split('|').map((s) => s.trim());
+    return {
+      id: id('h', text),
+      kind,
+      text,
+      ...(kind === 'scale' ? { low, high } : {}),
+      category: kind === 'who' ? 'who' : 'opinions',
+      maturity,
+      source: 'original',
+    };
+  }),
+};
+
 // ---- Write ------------------------------------------------------------------
 
 const drops = {
@@ -388,7 +413,9 @@ const write = (name, packs) =>
 write('quip', quipPacks);
 write('bluff', bluffPacks);
 write('sketch', sketchPacks);
+write('party', [party]);
 const summary = (packs, key) => packs.map((p) => `${p.id} ${p[key].length}`).join(', ');
 console.log(`quip: ${summary(quipPacks, 'quip')} (${drops.quip} duplicates dropped)`);
 console.log(`bluff: ${summary(bluffPacks, 'bluff')} (${drops.bluff} duplicates dropped)`);
 console.log(`sketch: ${summary(sketchPacks, 'sketch')} (${drops.sketch} duplicates dropped)`);
+console.log(`odd one out: ${party.oddone.length} pairs; hot takes: ${party.hottakes.length} questions`);

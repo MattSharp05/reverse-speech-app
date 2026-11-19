@@ -58,6 +58,30 @@ export const GAMES: Record<GameId, GameInfo> = {
     players: '3–10 players',
     minutes: '15–20 min',
   },
+  oddone: {
+    id: 'oddone',
+    title: 'Odd One Out',
+    tagline: 'One of you is faking it.',
+    blurb: 'Everyone gets the same secret word but one. Give a clue, then vote out the faker.',
+    players: '3–10 players',
+    minutes: '10–15 min',
+  },
+  hottakes: {
+    id: 'hottakes',
+    title: 'Hot Takes',
+    tagline: 'How well do you know them?',
+    blurb: 'Who’s most likely to…? Rate it 0–10 and guess the group. Points for reading the room.',
+    players: '3–10 players',
+    minutes: '10 min',
+  },
+  doodle: {
+    id: 'doodle',
+    title: 'Telephone Doodle',
+    tagline: 'Write. Draw. Guess. Repeat.',
+    blurb: 'A phrase becomes a drawing becomes a guess becomes a drawing… then watch it fall apart.',
+    players: '3–10 players',
+    minutes: '15–20 min',
+  },
 };
 
 export const colorOf = (p: { color: number } | undefined): string =>

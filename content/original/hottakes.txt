@@ -1,0 +1,91 @@
+# Hot Takes (original). who | maturity | text  — or — scale | maturity | text | low label | high label
+who | family | Who is most likely to survive a zombie apocalypse?
+who | family | Who is most likely to become famous?
+who | family | Who would win a hot dog eating contest?
+who | family | Who is most likely to get lost in their own neighborhood?
+who | family | Who would be the worst roommate?
+who | family | Who is most likely to cry at a commercial?
+who | family | Who is most likely to adopt ten cats?
+who | family | Who would last the longest without their phone?
+who | family | Who is most likely to start a cult by accident?
+who | family | Who gives the best advice?
+who | family | Who is secretly the most competitive?
+who | family | Who would be the first to die in a horror movie?
+who | family | Who is most likely to win the lottery and lose the ticket?
+who | family | Who is most likely to be late to their own wedding?
+who | family | Who would make the best president?
+who | family | Who is most likely to talk their way out of a speeding ticket?
+who | family | Who has the worst taste in music?
+who | family | Who is most likely to go viral for something embarrassing?
+who | family | Who would be the best at a heist?
+who | family | Who is most likely to fall asleep at a party?
+who | family | Who would survive longest on a desert island?
+who | family | Who is most likely to become a reality TV star?
+who | family | Who is the worst driver?
+who | family | Who is most likely to laugh at the wrong moment?
+who | family | Who would be the worst at keeping a secret?
+who | family | Who is most likely to still be awake at 4 a.m.?
+who | family | Who would you call to help hide a body (hypothetically)?
+who | family | Who is most likely to own a boat they can't sail?
+who | family | Who is most likely to argue with a referee?
+who | family | Who would be the best stand-up comedian?
+who | family | Who is most likely to forget everyone's birthday?
+who | family | Who is most likely to become a millionaire?
+who | family | Who takes the longest to reply to a text?
+who | family | Who is most likely to try a weird food first?
+who | family | Who would be the scariest boss?
+who | family | Who is most likely to move abroad on a whim?
+who | family | Who is the most dramatic?
+who | family | Who would win in a fight against a goose?
+who | family | Who is most likely to get kicked out of a museum?
+who | family | Who has the most chaotic phone screen?
+who | adult | Who is most likely to drunk-text their ex?
+who | adult | Who is most likely to get married in Vegas?
+who | adult | Who has the wildest browser history?
+who | adult | Who is most likely to get banned from a bar?
+who | adult | Who is most likely to have a secret OnlyFans?
+who | adult | Who is most likely to sleep through their own hangover brunch?
+who | adult | Who would be the worst wingman?
+who | adult | Who is most likely to hook up with a coworker?
+who | adult | Who is most likely to lie about their age on a dating app?
+who | adult | Who is most likely to end up in jail for something stupid?
+scale | family | Pineapple on pizza | Crime | Delicious
+scale | family | Cereal is a soup | Absolutely not | Obviously yes
+scale | family | Is a hot dog a sandwich? | No way | Definitely
+scale | family | Mornings | Torture | Best time of day
+scale | family | Camping | Nightmare | Paradise
+scale | family | Cats vs dogs | Team cat | Team dog
+scale | family | Socks with sandals | Never | Iconic
+scale | family | Reality TV | Brain rot | Art
+scale | family | Karaoke | I'd rather die | Hand me the mic
+scale | family | Small talk | Painful | Love it
+scale | family | Horror movies | Can't watch | Can't get enough
+scale | family | Texting vs calling | Text only | Call me
+scale | family | Surprise parties | Hate them | Love them
+scale | family | Leftovers for breakfast | Gross | Elite
+scale | family | Board games | Boring | Best night ever
+scale | family | Going to the gym | Avoid it | Daily ritual
+scale | family | Spicy food | Mild please | Burn me
+scale | family | Being early | Pointless | Essential
+scale | family | Theme parks | Overrated | Pure joy
+scale | family | Remakes of old movies | Stop it | Bring them on
+scale | family | Cilantro | Tastes like soap | Delicious
+scale | family | Sleeping with socks on | Monster | Cozy
+scale | family | Putting ketchup on everything | Disgusting | Perfect
+scale | family | Social media | Delete it all | Can't live without
+scale | family | Winter | Worst season | Best season
+scale | family | Road trips | Endless suffering | Peak adventure
+scale | family | Eating dessert first | Chaos | Genius
+scale | family | Weddings | Expensive torture | Best party
+scale | family | Self-checkout | Hate it | Love it
+scale | family | Voice messages | Unacceptable | Perfectly fine
+scale | family | Crocs | Fashion crime | Fashion icon
+scale | family | Tipping culture | Out of control | Totally fair
+scale | family | Working from home | Lonely | Never going back
+scale | family | Astrology | Nonsense | Totally real
+scale | family | AI-written birthday cards | Soulless | Efficient
+scale | adult | Dating apps | Hellscape | Great invention
+scale | adult | Tequila | Never again | Life of the party
+scale | adult | Splitting the bill on a first date | Unromantic | Fair
+scale | adult | Being friends with your ex | Impossible | Totally fine
+scale | adult | Day drinking | Bad idea | Best idea

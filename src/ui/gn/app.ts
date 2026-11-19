@@ -25,11 +25,22 @@ import { phoneNote } from './games/common';
 import { quipUi } from './games/quip';
 import { reverseUi } from './games/reverse';
 import { sketchUi } from './games/sketch';
+import { oddOneUi } from './games/oddone';
+import { hotTakesUi } from './games/hottakes';
+import { doodleUi } from './games/doodle';
 import type { GameUi } from './games/types';
 import { qrSvg } from './qr';
 import { buzz, isMuted, play, setMuted, unlockSound } from './sound';
 
-const UIS: Record<GameId, GameUi> = { reverse: reverseUi, quip: quipUi, bluff: bluffUi, sketch: sketchUi };
+const UIS: Record<GameId, GameUi> = {
+  reverse: reverseUi,
+  quip: quipUi,
+  bluff: bluffUi,
+  sketch: sketchUi,
+  oddone: oddOneUi,
+  hottakes: hotTakesUi,
+  doodle: doodleUi,
+};
 
 /** Room codes: no look-alike characters (from kart-racer's `ROOM_CODE_ALPHABET`). */
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -346,7 +357,7 @@ export class GameNight {
         'section',
         { class: 'gn-hero' },
         this.logo(),
-        h('h1', { class: 'gn-hero-title' }, 'One screen. Everyone’s phones. Four party games.'),
+        h('h1', { class: 'gn-hero-title' }, 'One screen. Everyone’s phones. Seven party games.'),
         h(
           'p',
           { class: 'gn-lead' },
@@ -991,6 +1002,32 @@ function art(id: GameId): HTMLElement {
           '<path d="M48 82 C 62 40, 80 40, 92 70 S 124 96, 150 38" stroke="var(--a)" stroke-width="7" fill="none" stroke-linecap="round"/>' +
           '<circle cx="64" cy="40" r="9" fill="none" stroke="var(--a2)" stroke-width="5"/>' +
           '<path d="M140 90 l26 -26 8 8 -26 26 -12 4z" fill="var(--a2)"/>',
+      );
+    case 'oddone':
+      return svg(
+        [40, 78, 116].map((x) => `<circle cx="${x}" cy="60" r="17" fill="var(--a)"/>`).join('') +
+          '<circle cx="160" cy="54" r="19" fill="var(--a2)"/>' +
+          '<text x="160" y="63" text-anchor="middle" font-size="24" font-weight="800" fill="#0d0f14">?</text>' +
+          '<path d="M24 96 h112" stroke="var(--a)" stroke-width="6" stroke-linecap="round" opacity=".5"/>',
+      );
+    case 'hottakes':
+      return svg(
+        '<rect x="20" y="78" width="160" height="12" rx="6" fill="#283040"/>' +
+          '<rect x="20" y="78" width="110" height="12" rx="6" fill="var(--a)"/>' +
+          '<circle cx="130" cy="84" r="14" fill="var(--a2)"/>' +
+          '<path d="M100 18 C 120 38, 92 46, 104 66 C 84 58, 76 40, 100 18z" fill="var(--a2)"/>' +
+          '<path d="M100 36 C 108 48, 96 52, 102 62 C 92 58, 90 48, 100 36z" fill="var(--a)"/>',
+      );
+    case 'doodle':
+      return svg(
+        '<rect x="14" y="30" width="48" height="36" rx="6" fill="#f3f4f7"/>' +
+          '<path d="M22 56 q8 -18 16 -4 t16 -6" stroke="var(--a)" stroke-width="4" fill="none" stroke-linecap="round"/>' +
+          '<path d="M68 48 h14 m-6 -6 l6 6 -6 6" stroke="var(--a2)" stroke-width="4" fill="none" stroke-linecap="round"/>' +
+          '<rect x="88" y="34" width="40" height="28" rx="14" fill="var(--a2)"/>' +
+          '<path d="M134 48 h14 m-6 -6 l6 6 -6 6" stroke="var(--a2)" stroke-width="4" fill="none" stroke-linecap="round"/>' +
+          '<rect x="152" y="30" width="36" height="36" rx="6" fill="#f3f4f7"/>' +
+          '<path d="M160 58 l8 -16 8 10 6 -6" stroke="var(--a)" stroke-width="4" fill="none" stroke-linecap="round"/>' +
+          '<path d="M40 84 q60 26 120 0" stroke="var(--a)" stroke-width="3" fill="none" stroke-dasharray="6 6"/>',
       );
   }
 }

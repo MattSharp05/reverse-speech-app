@@ -21,10 +21,14 @@ describe('bots', () => {
           state = next;
           moves++;
           acted = true;
+          module.view(state);
         }
         if (!acted) state = module.advance(state, ctx);
       }
       expect(module.done(state)).toBe(true);
+      // The TV still draws the final state.
+      expect(() => module.view(state)).not.toThrow();
+      for (const bot of bots) expect(() => module.privateView(state, bot.id)).not.toThrow();
       expect(moves).toBeGreaterThan(4);
     });
   }

@@ -1,7 +1,8 @@
 # Game Night (reverse-speech-app)
 
-Jackbox-style party games: one TV/laptop hosts, phones are controllers. Four games: Reverse
-(party version of Esrever), Quip Battle, Bluff It, Sketch It. Classic two-player Esrever stays at
+Jackbox-style party games: one TV/laptop hosts, phones are controllers. Seven games: Reverse
+(party version of Esrever), Quip Battle, Bluff It, Sketch It, Odd One Out, Hot Takes, Telephone
+Doodle (drawings travel packed: `games/doodle/pack.ts`). Classic two-player Esrever stays at
 `?mode=classic`. Static site on Vercel; online uses Supabase Realtime Broadcast (no database).
 
 ## Stack

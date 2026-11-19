@@ -26,12 +26,13 @@ function storageSet(store: Store | undefined, key: string, value: string): void 
 
 /** Every built-in pack (loaded on the TV only, as its own chunk) plus the host's custom packs. */
 export async function loadLibrary(store?: Store): Promise<ContentLibrary> {
-  const [quip, bluff, sketch] = await Promise.all([
+  const [quip, bluff, sketch, party] = await Promise.all([
     import('./packs/quip.json').then((m) => m.default as unknown as Pack[]),
     import('./packs/bluff.json').then((m) => m.default as unknown as Pack[]),
     import('./packs/sketch.json').then((m) => m.default as unknown as Pack[]),
+    import('./packs/party.json').then((m) => m.default as unknown as Pack[]),
   ]);
-  return buildLibrary([...quip, ...bluff, ...sketch, ...customPacks(store)], recentIds(store));
+  return buildLibrary([...quip, ...bluff, ...sketch, ...party, ...customPacks(store)], recentIds(store));
 }
 
 export function buildLibrary(packs: Pack[], recent: Set<string> = new Set()): ContentLibrary {
@@ -39,6 +40,8 @@ export function buildLibrary(packs: Pack[], recent: Set<string> = new Set()): Co
     quip: packs.flatMap((p) => p.quip ?? []),
     bluff: packs.flatMap((p) => p.bluff ?? []),
     sketch: packs.flatMap((p) => p.sketch ?? []),
+    oddone: packs.flatMap((p) => p.oddone ?? []),
+    hottakes: packs.flatMap((p) => p.hottakes ?? []),
     recent,
   };
 }

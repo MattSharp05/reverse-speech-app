@@ -39,6 +39,22 @@ export interface SketchPrompt extends Base {
   text: string;
 }
 
+/** An Odd One Out pair: everyone gets `word` except the odd one out. */
+export interface OddPair extends Base {
+  /** What everyone else gets. */
+  word: string;
+  /** What the odd one out gets in "similar word" mode. */
+  decoy: string;
+}
+
+/** A Hot Takes question: vote for a player ("who"), or rate on a 0–10 scale. */
+export interface HotTake extends Base {
+  kind: 'who' | 'scale';
+  text: string;
+  low?: string;
+  high?: string;
+}
+
 export interface Pack {
   id: string;
   title: string;
@@ -48,14 +64,25 @@ export interface Pack {
   quip?: QuipPrompt[];
   bluff?: BluffQuestion[];
   sketch?: SketchPrompt[];
+  oddone?: OddPair[];
+  hottakes?: HotTake[];
 }
 
 export interface ContentLibrary {
   quip: QuipPrompt[];
   bluff: BluffQuestion[];
   sketch: SketchPrompt[];
+  oddone: OddPair[];
+  hottakes: HotTake[];
   /** Ids used in recent games (dealt last). */
   recent: ReadonlySet<string>;
 }
 
-export const emptyLibrary = (): ContentLibrary => ({ quip: [], bluff: [], sketch: [], recent: new Set() });
+export const emptyLibrary = (): ContentLibrary => ({
+  quip: [],
+  bluff: [],
+  sketch: [],
+  oddone: [],
+  hottakes: [],
+  recent: new Set(),
+});

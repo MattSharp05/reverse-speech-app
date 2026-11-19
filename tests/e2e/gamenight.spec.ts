@@ -103,12 +103,14 @@ test('a Game Night: Quip Battle start to finish, then Bluff It without rejoining
   await tv.getByTestId('to-lobby').click();
   for (const phone of phones) await expect(phone.getByTestId('phone-lobby')).toBeVisible();
   await startGame(tv, 'bluff', { questions: '4' });
-  const state = await hostState<{ game: { state: { questions: { answer: string }[] } } }>(tv);
+  const state = await hostState<{ game: { state: { questions: { answer: string; text: string }[] } } }>(tv);
   const answer = state.game.state.questions[0]!.answer;
+  const question = state.game.state.questions[0]!.text;
 
   // The real answer is nowhere on the phones or the TV yet (checked when it's distinctive).
   await expect(phones[0]!.getByTestId('lie-input')).toBeVisible();
-  if (answer.length >= 5)
+  // (Skipped when the answer is in the question itself, e.g. a self-titled album.)
+  if (answer.length >= 5 && !question.toLowerCase().includes(answer.toLowerCase()))
     for (const page of [tv, ...phones]) await expect(page.locator('body')).not.toContainText(answer);
 
   // Typing the truth is turned away; a lie is locked in, once.
@@ -277,8 +279,117 @@ test('playing with bots: one phone and two bots finish Quip Battle', async ({ co
   }
   // The bots answer by themselves, so voting starts without skipping.
   await expect(tv.getByTestId('answer-card').first()).toBeVisible({ timeout: 20_000 });
-  // And they vote: every matchup gets a result, then the game ends on its own timers or skips.
-  await expect(tv.getByText(/%/).first()).toBeVisible({ timeout: 20_000 });
+  // Bots vote by themselves; the phone votes when it's the only voter (a bot-vs-bot matchup).
+  await expect
+    .poll(
+      async () => {
+        await clickFirstEnabled(phone, ['vote-0', 'vote-1']);
+        return tv.getByText(/%/).count();
+      },
+      { timeout: 20_000 },
+    )
+    .toBeGreaterThan(0);
   await skipToResults(tv);
   await expect(tv.getByTestId('standings').locator('li')).toHaveCount(3);
+});
+
+test('Odd One Out: clues, catching the odd one, their last guess', async ({ context }) => {
+  const { tv, phones } = await openRoom(context, ['Ann', 'Bo', 'Cy']);
+  await startGame(tv, 'oddone', { rounds: '3' });
+  const state = await hostState<{
+    players: { id: string; name: string }[];
+    game: { state: { odds: string[]; pairs: { word: string }[] } };
+  }>(tv);
+  const oddId = state.game.state.odds[0]!;
+  const word = state.game.state.pairs[0]!.word;
+  const oddIndex = state.players.findIndex((p) => p.id === oddId);
+  const oddName = state.players[oddIndex]!.name;
+
+  // Only the odd one out lacks the word; the TV never shows it.
+  for (const [i, phone] of phones.entries()) {
+    await expect(phone.getByTestId('secret')).toContainText(i === oddIndex ? 'odd one out' : word);
+  }
+  await expect(tv.locator('body')).not.toContainText(word);
+
+  // Saying the word is turned away.
+  const honest = phones[(oddIndex + 1) % 3]!;
+  await honest.getByTestId('clue-input').fill(`it is a ${word}`);
+  await honest.getByTestId('clue-submit').click();
+  await expect(honest.getByTestId('rejected')).toBeVisible();
+  for (const [i, phone] of phones.entries()) {
+    await phone.getByTestId('clue-input').fill(`clue ${i}`);
+    await phone.getByTestId('clue-submit').click();
+  }
+  await expect(tv.getByTestId('clue')).toHaveCount(3);
+
+  // Everyone else votes for the odd one; they vote for someone.
+  for (const [i, phone] of phones.entries()) {
+    if (i === oddIndex) await phone.getByTestId(`suspect-${state.players[(i + 1) % 3]!.name}`).click();
+    else await phone.getByTestId(`suspect-${oddName}`).click();
+  }
+  await expect(tv.getByText(`was the odd one out`)).toBeVisible();
+  const odd = phones[oddIndex]!;
+  await odd.getByTestId('odd-guess-input').fill(word);
+  await odd.getByTestId('odd-guess-submit').click();
+  await expect(tv.getByTestId('secret-word')).toHaveText(word);
+  await expect(tv.getByText('but guessed it!')).toBeVisible();
+  await skipToResults(tv);
+});
+
+test('Hot Takes: pick a player, rate a take', async ({ context }) => {
+  const { tv, phones } = await openRoom(context, ['Ann', 'Bo', 'Cy']);
+  await startGame(tv, 'hottakes', { mix: 'who', questions: '6' });
+  for (const phone of phones) await phone.getByTestId('hot-pick-Bo').click();
+  await expect(tv.getByTestId('hot-top')).toContainText('Bo');
+  for (const phone of phones) await expect(phone.getByTestId('hot-gained')).toContainText('+500');
+  await skipToResults(tv);
+
+  await tv.getByTestId('to-lobby').click();
+  await startGame(tv, 'hottakes', { mix: 'scale', questions: '6' });
+  for (const [i, phone] of phones.entries()) {
+    await phone.getByTestId('hot-own').fill(String(i * 3)); // 0, 3, 6: average 3
+    await phone.getByTestId('hot-guess').fill('3');
+    await phone.getByTestId('hot-rate').click();
+  }
+  await expect(tv.getByText('avg 3.0')).toBeVisible();
+  await skipToResults(tv);
+});
+
+test('Telephone Doodle: write, draw, guess, play back, vote', async ({ context }) => {
+  const { tv, phones } = await openRoom(context, ['Ann', 'Bo', 'Cy']);
+  await startGame(tv, 'doodle');
+  await phones[0]!.getByTestId('doodle-write-input').fill('a snail on a skateboard');
+  await phones[0]!.getByTestId('doodle-write-submit').click();
+  for (const phone of phones.slice(1)) await phone.getByTestId('use-suggestion').click();
+
+  // Someone else draws Ann's phrase.
+  await expect(phones.filter((p) => p !== phones[0]).length).toBe(2);
+  let drew = 0;
+  for (const phone of phones) {
+    await expect(phone.getByTestId('pad')).toBeVisible();
+    if ((await phone.getByTestId('prompt').textContent()) === 'a snail on a skateboard') drew++;
+    const box = (await phone.getByTestId('pad').boundingBox())!;
+    await phone.mouse.move(box.x + 40, box.y + 40);
+    await phone.mouse.down();
+    for (let t = 1; t <= 15; t++) await phone.mouse.move(box.x + 40 + t * 15, box.y + 40 + t * 6);
+    await phone.mouse.up();
+    await phone.getByTestId('draw-submit').click();
+  }
+  expect(drew).toBe(1);
+  for (const [i, phone] of phones.entries()) {
+    await expect(phone.getByTestId('guess-drawing')).toBeVisible();
+    await phone.getByTestId('doodle-guess-input').fill(`guess ${i}`);
+    await phone.getByTestId('doodle-guess-submit').click();
+  }
+  // The TV plays the first chain back, then everyone votes.
+  await expect(tv.getByTestId('entry').first()).toBeVisible();
+  while (!(await tv.getByText('Vote for your favourite moment!').isVisible()))
+    await tv.getByTestId('skip').click();
+  await expect(tv.getByTestId('entry')).toHaveCount(3);
+  for (const phone of phones) {
+    const vote = phone.locator('[data-testid^="doodle-vote-"]').first();
+    await expect(vote.or(phone.getByTestId('look-up'))).toBeVisible();
+    if (await vote.isVisible()) await vote.click();
+  }
+  await skipToResults(tv);
 });

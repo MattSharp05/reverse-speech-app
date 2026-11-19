@@ -34,6 +34,23 @@ export function library(): ContentLibrary {
       maturity: 'family',
       source: 'test',
     })),
+    oddone: Array.from({ length: 12 }, (_, i) => ({
+      id: `o${i}`,
+      word: `apple${i}`,
+      decoy: `pear${i}`,
+      category: 'food',
+      maturity: 'family',
+      source: 'test',
+    })),
+    hottakes: Array.from({ length: 16 }, (_, i) => ({
+      id: `h${i}`,
+      kind: i % 2 ? 'scale' : 'who',
+      text: `Question ${i}`,
+      ...(i % 2 ? { low: 'No', high: 'Yes' } : {}),
+      category: 'test',
+      maturity: 'family',
+      source: 'test',
+    })),
     recent: new Set(),
   };
 }

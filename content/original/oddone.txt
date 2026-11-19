@@ -1,0 +1,100 @@
+# Odd One Out word pairs (original). category | maturity | word | similar word for the odd one out
+food | family | pizza | flatbread
+food | family | sushi | burrito
+food | family | pancakes | waffles
+food | family | spaghetti | ramen
+food | family | popcorn | nachos
+food | family | croissant | bagel
+food | family | ice cream | frozen yogurt
+food | family | taco | quesadilla
+food | family | cheeseburger | hot dog
+food | family | avocado | cucumber
+food | family | chocolate | caramel
+food | family | coffee | tea
+food | family | lemonade | iced tea
+food | family | donut | muffin
+food | family | steak | pork chop
+animals | family | penguin | puffin
+animals | family | dolphin | shark
+animals | family | giraffe | camel
+animals | family | owl | bat
+animals | family | octopus | squid
+animals | family | kangaroo | rabbit
+animals | family | lion | tiger
+animals | family | hamster | guinea pig
+animals | family | snail | slug
+animals | family | flamingo | swan
+animals | family | crocodile | lizard
+animals | family | bee | wasp
+animals | family | sloth | koala
+places | family | beach | lake
+places | family | airport | train station
+places | family | library | bookstore
+places | family | hospital | dentist
+places | family | casino | arcade
+places | family | zoo | aquarium
+places | family | gym | yoga studio
+places | family | museum | art gallery
+places | family | cinema | theater
+places | family | campsite | cabin
+places | family | castle | palace
+places | family | supermarket | farmers market
+places | family | wedding | prom
+places | family | haunted house | escape room
+places | family | spaceship | submarine
+things | family | umbrella | raincoat
+things | family | guitar | violin
+things | family | bicycle | scooter
+things | family | toothbrush | hairbrush
+things | family | candle | flashlight
+things | family | pillow | blanket
+things | family | mirror | window
+things | family | backpack | suitcase
+things | family | sunglasses | hat
+things | family | microwave | oven
+things | family | balloon | kite
+things | family | trampoline | bouncy castle
+things | family | crown | tiara
+things | family | treasure map | GPS
+things | family | sock | glove
+jobs | family | firefighter | lifeguard
+jobs | family | chef | baker
+jobs | family | pilot | astronaut
+jobs | family | dentist | barber
+jobs | family | teacher | librarian
+jobs | family | magician | clown
+jobs | family | detective | spy
+jobs | family | pirate | sailor
+jobs | family | farmer | gardener
+activities | family | skiing | snowboarding
+activities | family | bowling | mini golf
+activities | family | karaoke | open mic night
+activities | family | camping | glamping
+activities | family | surfing | skateboarding
+activities | family | knitting | sewing
+activities | family | chess | checkers
+activities | family | road trip | cruise
+activities | family | birthday party | baby shower
+pop culture | family | vampire | zombie
+pop culture | family | wizard | witch
+pop culture | family | superhero | villain
+pop culture | family | robot | alien
+pop culture | family | dragon | dinosaur
+pop culture | family | mermaid | fairy
+pop culture | family | ghost | skeleton
+pop culture | family | cowboy | knight
+tech | family | laptop | tablet
+tech | family | podcast | audiobook
+tech | family | selfie | screenshot
+tech | family | emoji | meme
+tech | family | group chat | email thread
+adult | adult | hangover | food poisoning
+adult | adult | bachelor party | office party
+adult | adult | tinder date | blind date
+adult | adult | tequila shot | jägerbomb
+adult | adult | walk of shame | morning jog
+adult | adult | strip club | nightclub
+adult | adult | therapist | bartender
+adult | adult | divorce | breakup
+adult | adult | ex | crush
+adult | adult | Las Vegas | Ibiza
