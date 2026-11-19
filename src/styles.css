@@ -347,7 +347,7 @@ p {
   gap: 6px;
   font-weight: 600;
 }
-input[type='text'] {
+body:not(.gn) input[type='text'] {
   font: inherit;
   font-size: 1.1rem; /* 16px+ stops iOS zooming in */
   width: 100%;
@@ -360,7 +360,7 @@ input[type='text'] {
   outline: none;
   transition: border-color 0.15s;
 }
-input[type='text']:focus {
+body:not(.gn) input[type='text']:focus {
   border-color: var(--p1);
   background: #fff;
 }

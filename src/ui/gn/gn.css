@@ -1784,3 +1784,10 @@ html:has(body.gn) {
   border-radius: 99px;
   padding: 0.15em 0.6em;
 }
+
+/* Focused fields stay dark (white text on a white box was unreadable). */
+body.gn input:focus,
+body.gn textarea:focus {
+  background: var(--surface-2);
+  color: var(--ink);
+}
