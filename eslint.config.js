@@ -11,14 +11,14 @@ export default tseslint.config(
   {
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
     rules: {
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', ignoreRestSiblings: true }],
     },
   },
   {
     // The game rules stay pure: no DOM, audio or network, so they're easy to test and replay.
-    files: ['src/game/**/*.ts'],
+    files: ['src/game/**/*.ts', 'src/games/**/*.ts', 'src/platform/**/*.ts'],
     rules: {
-      'no-restricted-imports': ['error', { patterns: ['../ui/*', '../audio/*', '../net/*'] }],
+      'no-restricted-imports': ['error', { patterns: ['**/ui/*', '**/audio/*', '**/net/*'] }],
       'no-restricted-globals': ['error', 'window', 'document', 'navigator'],
     },
   },

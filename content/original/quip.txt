@@ -1,0 +1,210 @@
+# Original Quip Battle prompts (Game Night). One per line: category | maturity | text. ___ is a blank.
+general | family | The worst thing to say during a job interview
+general | family | A terrible name for a dating app
+general | family | Something you should never put on a wedding invitation
+general | family | The real reason the dinosaurs went extinct
+general | family | A rejected name for a new day of the week
+general | family | The worst possible thing to hear your pilot say over the intercom
+general | family | A fortune cookie message that would ruin your whole week
+general | family | What the Statue of Liberty is actually thinking
+general | family | A suspicious item to find in a hotel's lost and found
+general | family | The worst theme for a child's birthday party
+general | family | An unpopular flavor of toothpaste
+general | family | A sign you've been in the self-checkout line too long
+general | family | The worst thing to yell during a moment of silence
+general | family | A new rule for the game of Monopoly that would end friendships faster
+general | family | A terrible name for a hair salon
+general | family | Something you should never say while being sworn in as president
+general | family | The least comforting thing a dentist can say
+general | family | What's really at the center of the Earth
+general | family | A rejected Olympic sport
+general | family | The worst thing to find inside a piñata
+general | family | An honest slogan for your hometown
+general | family | A terrible name for a boat
+general | family | What a pigeon is thinking right before it steals your sandwich
+general | family | The worst excuse for showing up three hours late
+general | family | A ridiculous thing to be famous for
+general | family | The most useless superpower
+general | family | A bad thing to whisper to a horse
+general | family | Something you'd find in a wizard's search history
+general | family | A product that definitely shouldn't come in "family size"
+general | family | The worst possible mascot for a hospital
+general | family | The real reason the chicken crossed the road
+general | family | A new law that would make everyone instantly happier
+general | family | The worst name for a pet goldfish
+general | family | What to say if you accidentally wave at someone who wasn't waving at you
+general | family | A terrible slogan for a parachute company
+general | family | The sound a giraffe makes when nobody is listening
+general | family | A sign that your house might be haunted by a very lazy ghost
+general | family | The worst topping to put on a birthday cake
+general | family | A strange thing to keep in your glove compartment
+general | family | An awful name for a perfume
+general | family | Something nobody has ever said at a barbecue
+general | family | The worst thing to bring to a potluck
+general | family | A terrible thing to engrave on a trophy
+general | family | What your houseplants say about you when you leave
+general | family | The most dramatic way to quit a job
+general | family | A bad name for a breakfast cereal
+general | family | The worst thing about being a vampire
+general | family | A terrible motto for a summer camp
+general | family | The world's least relaxing spa treatment
+general | family | Something you should never do in an elevator
+general | family | A rejected Crayola crayon color
+general | family | What aliens would find most confusing about humans
+general | family | The worst possible name for a racehorse
+general | family | A clue that your neighbor is secretly a raccoon in a trench coat
+general | family | A bad thing to hear from the person giving you a tattoo
+general | family | The least exciting prize at a carnival
+general | family | The worst flavor of potato chip
+general | family | An unhelpful thing to say to someone stuck in a tree
+general | family | A strange item on a pirate's grocery list
+general | family | The worst song to play at a funeral
+general | family | The most unnecessary invention ever
+general | family | A terrible name for a sequel to the Bible
+general | family | Something you don't want to read on a restaurant's "Specials" board
+general | family | The worst thing to say to a mime
+general | family | A weird thing to have a collection of
+general | family | A new board game nobody would ever play twice
+general | family | What the Mona Lisa is smirking about
+general | family | The worst excuse to call in sick
+general | family | A terrible thing to be allergic to
+general | family | The strangest thing a magician could pull out of a hat
+general | family | What's really behind the "Employees Only" door
+general | family | Something you should never shout in a library
+general | family | The worst possible item to be stuck on a desert island with
+general | family | A bad name for a self-help book
+general | family | The weirdest thing to find in your shoe
+general | family | ___: the gift nobody asked for
+general | family | My superhero name is Captain ___
+general | family | I didn't get the job because I listed "___" as a skill
+general | family | The museum's newest exhibit: The History of ___
+general | family | Nobody warned me that adulthood is mostly ___
+general | family | Scientists finally discovered what makes cats so smug: ___
+general | family | The real treasure was ___ all along
+general | family | Breaking news: local man arrested for ___
+general | family | In the year 3000, the most popular sport will be ___
+general | family | My grandmother's secret ingredient is ___
+general | family | The ancient prophecy said the chosen one would arrive riding ___
+general | family | Coming soon to theaters: "___: The Musical"
+general | family | My therapist says I need to stop ___
+general | family | The worst thing about living on the Moon: ___
+general | family | Today's horoscope: Avoid ___ at all costs
+general | family | The first rule of the secret society: never ___
+general | family | The worst thing to see in your rearview mirror
+general | family | The worst flavor of cough drop
+general | family | A terrible theme for a wedding
+general | family | A suspicious thing for a babysitter to ask
+general | family | What a snowman thinks about all winter
+food | family | A food that should never be served on a stick
+food | family | The worst thing to order at a five-star restaurant
+food | family | A terrible new ice cream flavor
+food | family | What the chef is actually doing in the kitchen
+food | family | The worst thing a waiter could recommend
+food | family | A sandwich that should be illegal
+food | family | A pizza topping that would start a war
+food | family | The real reason the cheese is moldy
+food | family | A rejected Thanksgiving side dish
+food | family | The weirdest thing to dip in chocolate
+food | family | The secret menu item at a fast food place for villains
+food | family | An appetizer you'd only serve to your enemies
+animals | family | What dogs are really barking about
+animals | family | A job a cat would be terrible at
+animals | family | The worst animal to have as a coworker
+animals | family | What goes on at a squirrel's town meeting
+animals | family | The real reason flamingos stand on one leg
+animals | family | A terrible name for a zoo
+animals | family | What a goldfish would put on its resume
+animals | family | An animal that should not be allowed to drive
+animals | family | The worst thing a parrot could learn to say
+animals | family | What penguins argue about
+relationships | family | A terrible thing to say when meeting your partner's parents
+relationships | family | The worst place for a first date
+relationships | family | A red flag on a dating profile
+relationships | family | Something you should never say during a marriage proposal
+relationships | family | A bad gift for a 10-year anniversary
+relationships | family | The worst way to break up with someone
+relationships | family | A terrible nickname to call your significant other in public
+relationships | family | What your best friend says about you when you're not around
+relationships | family | The worst text to send to the group chat by accident
+relationships | family | A terrible way to announce a pregnancy
+relationships | family | The worst wedding vow ever spoken
+relationships | family | Something you should never do on a double date
+relationships | family | A sign your roommate is a supervillain
+relationships | family | The worst thing to say at a friend's wedding toast
+relationships | family | What couples who've been together 50 years secretly fight about
+relationships | family | A terrible icebreaker at a speed-dating event
+relationships | family | The worst reason to end a friendship
+relationships | family | My love language is ___
+relationships | family | You know it's true love when ___
+tech | family | The worst feature for a smart fridge
+tech | family | A terrible name for a programming language
+tech | family | What the AI assistant does when you're not looking
+tech | family | The real reason the Wi-Fi is down
+tech | family | A rejected emoji
+tech | family | The worst push notification to get at 3 a.m.
+tech | family | The most passive-aggressive commit message
+tech | family | A terrible password hint
+tech | family | What's really in the cloud
+tech | family | The worst thing to accidentally share on screen during a meeting
+tech | family | A new social network nobody asked for
+tech | family | A terrible name for a startup
+tech | family | Something you should never say during a code review
+tech | family | The worst thing your smart speaker could overhear
+tech | family | An honest error message
+tech | family | What the "I'm not a robot" checkbox is really testing
+tech | family | A bad thing for your GPS to say
+tech | family | The real reason the software update takes 4 hours
+tech | family | It works on my machine because ___
+tech | family | The next version of my phone will include ___
+tech | family | Our startup is like Uber, but for ___
+tech | family | The bug wasn't a bug, it was ___
+pop culture | family | A reality show that would be canceled after one episode
+pop culture | family | The worst possible name for a boy band
+pop culture | family | A rejected superhero
+pop culture | family | A terrible title for a romantic comedy
+pop culture | family | The worst thing to say at the Oscars
+pop culture | family | A video game that should never exist
+pop culture | family | What really happens after "happily ever after"
+pop culture | family | The worst sequel title for a disaster movie
+pop culture | family | A cooking show with the lowest ratings ever
+pop culture | family | A bad name for a heavy metal band
+pop culture | family | A podcast nobody would listen to
+pop culture | family | The worst plot twist in a mystery novel
+pop culture | family | A terrible catchphrase for a game show host
+pop culture | family | What a movie villain does on their day off
+pop culture | family | The least scary horror movie title
+pop culture | family | The worst thing to post as your first ever social media post
+pop culture | family | A new holiday special nobody wants to see
+pop culture | family | Today's trending hashtag: #___
+adult | adult | The worst thing to say during sex
+adult | adult | A terrible name for a strip club
+adult | adult | Something you should never say to a cop when you've been drinking
+adult | adult | The worst thing to find in your partner's browser history
+adult | adult | A terrible safe word
+adult | adult | What really happens at the office holiday party
+adult | adult | A bad thing to text your ex at 2 a.m.
+adult | adult | The worst thing to hear from the next bathroom stall
+adult | adult | A cocktail that should come with a warning label
+adult | adult | The worst pickup line in history
+adult | adult | A rejected name for a condom brand
+adult | adult | The real reason Vegas has so many chapels
+adult | adult | Something you should never say during a hangover
+adult | adult | A bachelor party activity that ends in a lawsuit
+adult | adult | The worst thing to bring to an orgy
+adult | adult | What your tinder bio should really say
+adult | adult | A terrible name for a sex toy
+adult | adult | The worst thing to do on a walk of shame
+adult | adult | The real reason I got kicked out of the bar: ___
+adult | adult | My most embarrassing drunk purchase: ___
+dark | adult | A terrible thing to put in your will
+dark | adult | The worst last words
+dark | adult | An awful thing to write on a sympathy card
+dark | adult | The worst thing a doctor could say while looking at your X-ray
+dark | adult | A bad thing for the funeral director to say
+dark | adult | An inappropriate song for a hospice
+dark | adult | What the Grim Reaper does on his day off
+dark | adult | A terrible epitaph
+dark | adult | The worst way to be remembered
+dark | adult | A new circle of Hell for people who ___
+dark | adult | The cause of death on my certificate will be ___
+dark | adult | A terrible thing to say at an exorcism

@@ -1,0 +1,167 @@
+# Original Sketch It prompts. One per line: maturity | text.
+family | A penguin applying for a mortgage
+family | A ghost trying to use a smartphone
+family | A dinosaur stuck in traffic
+family | A banana winning an Olympic medal
+family | A shark at the dentist
+family | A snowman on a beach holiday
+family | A cat running for president
+family | A vampire at a blood drive
+family | A robot learning to swim
+family | A giraffe in a tiny car
+family | A burrito getting married
+family | A wizard doing his taxes
+family | A cow on a trampoline
+family | An octopus playing the drums
+family | A grandma winning a breakdancing contest
+family | A pizza going to therapy
+family | A pigeon stealing a sandwich
+family | A volcano with the hiccups
+family | A mummy unwrapping a present
+family | A knight afraid of a kitten
+family | A hamster driving a monster truck
+family | A cactus giving a hug
+family | An alien at a job interview
+family | A sloth winning a race
+family | A tree getting a haircut
+family | A potato on a first date
+family | A pirate at a spelling bee
+family | A dragon at a birthday party
+family | A toaster falling in love
+family | A bear in a bubble bath
+family | A chicken crossing the road on a scooter
+family | A ghost afraid of the dark
+family | A superhero doing laundry
+family | A horse in a bowling alley
+family | A frog giving a TED talk
+family | A wedding cake running away
+family | A goldfish on a skateboard
+family | A zombie at a yoga class
+family | The Moon eating a cheeseburger
+family | A llama at the hairdresser
+family | A crocodile brushing its teeth
+family | A duck in a business meeting
+family | A clown at a funeral
+family | A gorilla knitting a sweater
+family | A rubber duck rescuing a swimmer
+family | A snail at a speed-dating event
+family | A ninja tripping over a toy
+family | A sandwich with stage fright
+family | A lighthouse with sunglasses
+family | A baby running a marathon
+family | A fridge full of tiny people
+family | An elephant hiding behind a lamp post
+family | A worm wearing a top hat
+family | A tornado at a tea party
+family | A mermaid stuck in a bathtub
+family | A cyclops at the optician
+family | A teacup in a storm
+family | A sheep counting humans to fall asleep
+family | A parrot giving a weather forecast
+family | A cloud crying at a wedding
+family | An astronaut mowing the lawn
+family | A carrot at the gym
+family | A kangaroo with an overstuffed pouch
+family | A tooth fairy on strike
+family | A unicorn with a parking ticket
+family | A pineapple at the barber
+family | A taco on a roller coaster
+family | A pumpkin in witness protection
+family | A dog walking its owner
+family | A haunted vending machine
+family | A bee at the dentist
+family | A walrus in ballet class
+family | A bathtub sailing across the ocean
+family | A grumpy sun on a Monday
+family | A mouse lifting weights
+family | A hot dog on vacation
+family | A spider knitting a scarf
+family | A detective looking for his glasses
+family | A beard with a beard
+family | A sock that lost its partner
+family | A turtle late for work
+family | A moose in a phone booth
+family | A sandcastle getting robbed
+family | A pancake doing a backflip
+family | A bat hanging out at a coffee shop
+family | A volcano at a spa
+family | A lobster on a first date
+family | A sad ice cream on a hot day
+family | A dragon trying to blow out birthday candles
+family | A broccoli superhero
+family | A teddy bear guarding a bank
+family | A hedgehog getting a hug
+family | A scarecrow scared of crows
+family | A camel at an all-you-can-drink buffet
+family | A tiny horse pulling a huge carriage
+family | A dog in a job interview
+family | A grandpa on a jetpack
+family | A banana slipping on a person
+family | A cat knocking over the Eiffel Tower
+family | A coffee mug needing coffee
+family | A snake trying on shoes
+family | A ghost at a laundromat
+family | A rocket with a flat tire
+family | A whale stuck in an elevator
+family | An owl that can't stay awake
+family | A chef chasing a runaway meatball
+family | A penguin at the beach
+family | A tiger that's afraid of a cucumber
+family | A cupcake in a boxing match
+family | A princess rescuing a dragon
+family | A kid selling lemonade to a giant
+family | A stapler with feelings
+family | A photo bomb by a bear
+family | Two pigeons fighting over a fry
+family | A traffic cone at a party
+family | An onion making everyone cry
+family | A bald eagle getting a toupee
+family | A dentist with no teeth
+family | A puddle that's too deep
+family | A mailbox eating letters
+family | A dog that ate the homework, guilty face
+family | A skeleton playing the xylophone on its ribs
+family | A cat at a dog show
+family | A potato couch potato
+family | The world's tallest sandwich
+family | A Viking at a tea party
+family | A cow abducted by a UFO
+family | A raccoon running a restaurant
+family | A sumo wrestler on a tightrope
+family | A grumpy cat on a birthday
+family | A llama spitting on a tourist
+family | An angry cloud raining on one person
+family | A soccer ball scoring itself
+family | A pirate with too many parrots
+family | A hot air balloon made of pizza
+family | A monster under the bed afraid of a kid
+family | A squirrel hoarding a whole pizza
+family | A robot walking a robot dog
+family | A ghost with a sheet that's too short
+family | A dinosaur trying to clap
+family | A fish riding a bicycle
+family | A banana in pajamas
+family | A tiny dragon guarding a sock
+family | A flamingo on ice skates
+family | A sad clown at the DMV
+family | A vampire at the beach
+family | A jellyfish at a hair salon
+family | A pig flying first class
+family | A strongman lifting a feather
+family | A goat on a mountain of laundry
+family | A wizard whose spell went wrong
+family | An avocado at the gym
+family | A telephone that hates phone calls
+family | A rhino in a china shop
+family | A dog trying to catch its tail
+family | Pizza delivery to the Moon
+adult | A bachelor party at a petting zoo
+adult | A wedding where everyone objected
+adult | A hangover in the shape of a person
+adult | Your boss seeing your search history
+adult | A stripper at a kid's birthday party
+adult | The walk of shame of a penguin
+adult | A drunk text written by a ghost
+adult | A tax audit in hell
+adult | Cupid shooting the wrong person
+adult | The worst Tinder profile picture
