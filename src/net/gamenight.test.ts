@@ -31,9 +31,12 @@ class MemoryStorage {
   setItem = (k: string, v: string) => void this.data.set(k, v);
 }
 
-/** Lets async crypto and queued messages settle. */
+/** Lets async crypto (real time: WebCrypto runs off the main thread) and queued messages settle. */
 const settle = async () => {
-  for (let i = 0; i < 30; i++) await vi.advanceTimersByTimeAsync(5);
+  for (let i = 0; i < 40; i++) {
+    await new Promise((resolve) => setTimeout(resolve, 3));
+    await vi.advanceTimersByTimeAsync(5);
+  }
 };
 
 afterEach(() => vi.useRealTimers());
