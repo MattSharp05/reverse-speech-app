@@ -16,7 +16,7 @@ import type { GnMessage, PublicRoom } from '../../net/gnProtocol';
 import { HostRoom } from '../../net/host';
 import { PlayerClient } from '../../net/player';
 import type { GameId } from '../../platform/module';
-import { settingsFor } from '../../platform/room';
+import { MAX_PLAYERS, settingsFor } from '../../platform/room';
 import { h, toast } from '../dom';
 import { refreshClipButtons, setClipOwner } from '../widgets';
 import { avatar, colorOf, draftInput, drafts, GAMES, nameTag, playerMap, startTicker, swap } from './core';
@@ -637,6 +637,9 @@ export class GameNight {
                   { class: `gn-player${p.online ? '' : ' away'}`, style: `--pc:${colorOf(p)}` },
                   avatar(p),
                   h('span', { class: 'gn-player-name' }, p.name),
+                  p.bot
+                    ? h('span', { class: 'gn-bot', title: 'Bot: played by this screen' }, '🤖 bot')
+                    : null,
                   wins[p.id]
                     ? h('span', { class: 'gn-trophy', title: 'Games won tonight' }, `🏆 ${wins[p.id]}`)
                     : null,
@@ -648,7 +651,7 @@ export class GameNight {
                       title: `Remove ${p.name}`,
                       'aria-label': `Remove ${p.name}`,
                       onclick: () =>
-                        confirm(`Remove ${p.name} from the room?`) &&
+                        (p.bot || confirm(`Remove ${p.name} from the room?`)) &&
                         host.dispatch({ type: 'kick', id: p.id }),
                     },
                     '✕',
@@ -656,6 +659,18 @@ export class GameNight {
                 ),
               )
             : h('li', { class: 'gn-empty' }, 'Waiting for players…'),
+        ),
+        h(
+          'button',
+          {
+            class: 'gn-btn small',
+            type: 'button',
+            disabled: room.players.length >= MAX_PLAYERS,
+            title: 'A player this screen plays itself, for testing or a small group',
+            'data-testid': 'add-bot',
+            onclick: () => host.addBot(),
+          },
+          '🤖 Add a bot',
         ),
       ),
       h(

@@ -11,6 +11,7 @@ import {
   type Timed,
 } from '../../platform/module';
 import { shuffle } from '../../platform/rng';
+import { BOT_ANSWERS, pick } from '../bots';
 import { addPoints } from '../../platform/scores';
 import { cleanText, sameAnswer } from '../../platform/text';
 
@@ -284,6 +285,22 @@ export const bluff: GameModule<BluffState, BluffSettings> = {
       /** Options this player wrote (they can't pick them). */
       own: s.options.map((o, i) => (o.authors.includes(id) ? i : -1)).filter((i) => i >= 0),
     };
+  },
+
+  botAction(s, bot, rng) {
+    if (s.phase === 'lie' && !s.lies[bot]) {
+      const q = question(s);
+      const taken = Object.values(s.lies);
+      const decoys = q.decoys.filter((d) => !isTruth(q, d) && !taken.some((t) => sameAnswer(t, d)));
+      return { type: 'lie', text: decoys.length && rng() < 0.8 ? pick(decoys, rng) : pick(BOT_ANSWERS, rng) };
+    }
+    if (s.phase === 'pick' && s.picks[bot] === undefined) {
+      const options = s.options.map((_, i) => i).filter((i) => !s.options[i]!.authors.includes(bot));
+      if (!options.length) return null;
+      const truth = s.options.findIndex((o) => o.truth);
+      return { type: 'pick', option: rng() < 0.35 ? truth : pick(options, rng) };
+    }
+    return null;
   },
 
   scores: (s) => s.scores,

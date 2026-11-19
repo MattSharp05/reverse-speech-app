@@ -262,3 +262,23 @@ test('the TV picks up its room after a reload', async ({ context }) => {
   await phones[0]!.getByTestId('lie-submit').click();
   await expect(phones[0]!.getByTestId('lied')).toBeVisible();
 });
+
+test('playing with bots: one phone and two bots finish Quip Battle', async ({ context }) => {
+  const { tv, phones } = await openRoom(context, ['Ann']);
+  await tv.getByTestId('add-bot').click();
+  await tv.getByTestId('add-bot').click();
+  await expect(tv.getByTestId('players').getByText('🤖 bot')).toHaveCount(2);
+  await startGame(tv, 'quip', { rounds: '1', final: 'no' });
+  await tv.getByTestId('skip').click(); // past the intro
+  const phone = phones[0]!;
+  for (let k = 0; k < 2; k++) {
+    await phone.getByTestId('answer-input').fill(`human answer ${k}`);
+    await phone.getByTestId('answer-submit').click();
+  }
+  // The bots answer by themselves, so voting starts without skipping.
+  await expect(tv.getByTestId('answer-card').first()).toBeVisible({ timeout: 20_000 });
+  // And they vote: every matchup gets a result, then the game ends on its own timers or skips.
+  await expect(tv.getByText(/%/).first()).toBeVisible({ timeout: 20_000 });
+  await skipToResults(tv);
+  await expect(tv.getByTestId('standings').locator('li')).toHaveCount(3);
+});

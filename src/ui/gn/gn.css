@@ -1775,3 +1775,12 @@ body.gn #app {
 html:has(body.gn) {
   background: #0d0f14;
 }
+
+.gn-bot {
+  font-size: 0.75em;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--surface-3);
+  border-radius: 99px;
+  padding: 0.15em 0.6em;
+}

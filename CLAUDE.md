@@ -23,6 +23,7 @@ Playwright · ESLint + Prettier.
 - `src/games/<id>/rules.ts` pure rules per game (+ tests); `registry.ts` lists them.
   `view` is public (TV + phones), `privateView` is one player's secrets; neither reveals an
   answer before its reveal phase. Untrusted input: validate everything in `act`.
+  `botAction` returns a bot's move (the TV runs bots, `host.ts` `runBots`; stock lines in `games/bots.ts`).
 - `src/content/` `schema.ts`, `library.ts` (load packs on the TV, custom packs, recent history),
   `deal.ts`, `packs/*.json` (generated; sources in CREDITS.md and `content/original/`).
 - `src/net/` `host.ts` (TV: authority, timers, sealed per-player slots, persists to

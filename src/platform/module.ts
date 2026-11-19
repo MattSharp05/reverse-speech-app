@@ -9,6 +9,8 @@ export interface Player {
   name: string;
   /** Index into the player colour palette. */
   color: number;
+  /** Played by the TV itself. */
+  bot?: boolean;
 }
 
 /** What rules get from the room besides the state: the host's clock, randomness, content. */
@@ -53,6 +55,11 @@ export interface GameModule<S extends Timed = Timed, Settings = Record<string, s
   used(state: S): string[];
   /** Audio clip ids the game refers to (Reverse): the TV fetches any it lacks. */
   clips?(state: S): string[];
+  /**
+   * What a bot does now, or null when it has nothing to do in this phase. Must return an action
+   * `act` accepts. The TV calls it after a short, random "thinking" delay.
+   */
+  botAction?(state: S, bot: PlayerId, rng: Rng): unknown;
   /** Audio clips one player's phone needs right now (Reverse). */
   playerClips?(state: S, player: PlayerId): string[];
 }

@@ -43,6 +43,7 @@ export type RoomAction =
   | { type: 'join'; id: PlayerId; name: string }
   | { type: 'rename'; id: PlayerId; name: string }
   | { type: 'kick'; id: PlayerId }
+  | { type: 'addBot'; id: PlayerId; name: string }
   | { type: 'select'; game: GameId }
   | { type: 'setting'; game: GameId; key: string; value: string | number }
   | { type: 'start' }
@@ -147,6 +148,20 @@ export function reduceRoom(room: RoomState, action: RoomAction, modules: Modules
           room.players.map((p) => p.name),
         ),
         color: freeColor(room.players),
+      };
+      return { ...room, players: [...room.players, player] };
+    }
+
+    case 'addBot': {
+      if (room.players.length >= MAX_PLAYERS || room.players.some((p) => p.id === action.id)) return room;
+      const player: Player = {
+        id: action.id,
+        name: cleanName(
+          action.name,
+          room.players.map((p) => p.name),
+        ),
+        color: freeColor(room.players),
+        bot: true,
       };
       return { ...room, players: [...room.players, player] };
     }

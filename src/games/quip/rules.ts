@@ -10,6 +10,7 @@ import {
   type Timed,
 } from '../../platform/module';
 import { shuffle } from '../../platform/rng';
+import { BOT_ANSWERS, pick } from '../bots';
 import { addPoints } from '../../platform/scores';
 import { cleanText } from '../../platform/text';
 
@@ -352,6 +353,23 @@ export const quip: GameModule<QuipState, QuipSettings> = {
       /** Answers in the current matchup this player wrote (they can't vote for them). */
       own: m ? m.authors.map((a, i) => (a === id ? i : -1)).filter((i) => i >= 0) : [],
     };
+  },
+
+  botAction(s, bot, rng) {
+    if (s.phase === 'answer') {
+      const index = s.matchups.findIndex((m) => m.answers[m.authors.indexOf(bot)] === null);
+      return index < 0 ? null : { type: 'answer', matchup: index, text: pick(BOT_ANSWERS, rng) };
+    }
+    if (s.phase === 'vote') {
+      const m = s.matchups[s.current]!;
+      if (!eligibleVoters(s, m).includes(bot) || m.votes[bot] !== undefined) return null;
+      const options = m.answers.map((_, i) => i).filter((i) => m.answers[i] !== null && m.authors[i] !== bot);
+      if (!options.length) return null;
+      if (!isFinal(s)) return { type: 'vote', choice: pick(options, rng) };
+      const count = Math.min(options.length, 1 + Math.floor(rng() * FINAL_VOTES));
+      return { type: 'vote', choices: shuffle(options, rng).slice(0, count) };
+    }
+    return null;
   },
 
   scores: (s) => s.scores,

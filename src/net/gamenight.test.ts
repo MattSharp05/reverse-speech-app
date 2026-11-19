@@ -183,4 +183,42 @@ describe('Game Night networking', () => {
     await settle();
     expect(phone.slot?.view).not.toBeNull();
   });
+
+  it('bots join from the TV and play their moves', async () => {
+    vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'Date'] });
+    const hub = new Hub();
+    const ctx = testCtx(4);
+    const host = await HostRoom.open({
+      code: 'BOTS',
+      channel: hub.channel(),
+      content: ctx.content,
+      rng: ctx.rng,
+      botDelay: [100, 200],
+    });
+    const phone = await PlayerClient.open({
+      code: 'BOTS',
+      name: 'Ann',
+      channel: hub.channel(),
+      storage: new MemoryStorage(),
+    });
+    await settle();
+    host.addBot();
+    host.addBot();
+    expect(host.room.players.map((p) => [p.name, Boolean(p.bot)])).toEqual([
+      ['Ann', false],
+      ['Robo Rita', true],
+      ['Beep Boop', true],
+    ]);
+    expect(host.publicRoom().players.every((p) => p.online)).toBe(true);
+    host.dispatch({ type: 'select', game: 'bluff' });
+    host.dispatch({ type: 'start' });
+    await vi.advanceTimersByTimeAsync(1000);
+    const state = host.room.game!.state as unknown as { lies: Record<string, string>; phase: string };
+    expect(Object.keys(state.lies)).toHaveLength(2);
+    expect(state.phase).toBe('lie'); // still waiting for the human
+    phone.dispatch({ type: 'play', action: { type: 'lie', text: 'my lie' } });
+    await settle();
+    await vi.advanceTimersByTimeAsync(1000);
+    expect((host.room.game!.state as unknown as { phase: string }).phase).toBe('pick');
+  });
 });

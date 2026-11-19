@@ -1,8 +1,10 @@
 import { getClip, hasClip, putClip } from '../audio/clips';
 import { decode, encode } from '../audio/pcm';
 import type { ContentLibrary } from '../content/schema';
+import { BOT_NAMES } from '../games/bots';
 import { modules as allModules } from '../games/registry';
 import type { Ctx, PlayerId } from '../platform/module';
+import { randomId } from '../platform/rng';
 import {
   newRoom,
   PLAYER_ACTIONS,
@@ -45,6 +47,24 @@ export interface HostOptions {
   modules?: Modules;
   /** A game ended: its content ids, to avoid next time. */
   onGameOver?: (used: string[]) => void;
+  /** How long bots "think" before each move, ms (random in this range). */
+  botDelay?: [number, number];
+}
+
+/** Bots wait this long (random in between) before each move, ms. */
+const BOT_DELAY: [number, number] = [1500, 5000];
+
+/** A short two-tone chirp standing in for a bot's recording (16 kHz mono). */
+function botClip(): Float32Array {
+  const rate = 16000;
+  const samples = new Float32Array(rate * 0.7);
+  for (let i = 0; i < samples.length; i++) {
+    const t = i / rate;
+    const freq = t < 0.35 ? 520 + t * 600 : 900 - (t - 0.35) * 800;
+    const fade = Math.min(1, t * 20, (0.7 - t) * 20);
+    samples[i] = Math.sin(2 * Math.PI * freq * t) * 0.5 * fade;
+  }
+  return samples;
 }
 
 interface Member {
@@ -113,6 +133,7 @@ export class HostRoom {
   }
 
   online(id: PlayerId): boolean {
+    if (this.room.players.some((p) => p.id === id && p.bot)) return true;
     const m = this.members.get(id);
     return m !== undefined && this.now() - m.lastSeen < AWAY_MS;
   }
@@ -151,6 +172,13 @@ export class HostRoom {
     };
   }
 
+  /** Adds a bot player (the TV plays it). */
+  addBot(): void {
+    const taken = this.room.players.map((p) => p.name);
+    const name = BOT_NAMES.find((n) => !taken.includes(n)) ?? 'Bot';
+    this.apply({ type: 'addBot', id: `bot-${randomId(this.options.rng ?? Math.random, 6)}`, name });
+  }
+
   close(): void {
     this.closed = true;
     for (const timer of this.timers) clearInterval(timer);
@@ -186,9 +214,58 @@ export class HostRoom {
   private tick(): void {
     if (this.closed) return;
     this.apply({ type: 'tick' });
+    this.runBots();
+    this.botClips(); // also after a TV reload: placeholder recordings live in memory
     if (this.now() - this.lastSent >= HEARTBEAT_MS) this.broadcast();
     this.askForClips();
     this.emit(); // online dots and countdowns
+  }
+
+  /** Each bot's next move: what it's waiting on (`key`), and when it moves. */
+  private readonly botPlans = new Map<PlayerId, { key: string; at: number; done: boolean }>();
+
+  /** Lets each bot in the game make its move once its thinking time is up. */
+  private runBots(): void {
+    const game = this.room.game;
+    if (!game || game.over || this.room.paused !== null) return;
+    const module = this.modules[game.id];
+    if (!module.botAction) return;
+    const rng = this.options.rng ?? Math.random;
+    const [min, max] = this.options.botDelay ?? BOT_DELAY;
+    const view = module.view(game.state) as Record<string, unknown>;
+    for (const p of this.room.players) {
+      if (!p.bot || !game.players.includes(p.id)) continue;
+      const key = JSON.stringify([
+        game.id,
+        view.phase,
+        view.round,
+        view.index,
+        view.matchupIndex,
+        module.privateView(game.state, p.id),
+      ]);
+      let plan = this.botPlans.get(p.id);
+      if (!plan || plan.key !== key) {
+        plan = { key, at: this.now() + min + rng() * (max - min), done: false };
+        this.botPlans.set(p.id, plan);
+      }
+      if (plan.done || this.now() < plan.at) continue;
+      plan.done = true;
+      const action = module.botAction(game.state, p.id, rng);
+      if (action === null || action === undefined) continue;
+      this.apply({ type: 'play', from: p.id, action });
+      this.botClips();
+      return; // the state moved on: the other bots look again next tick
+    }
+  }
+
+  /** Placeholder recordings for clips bots refer to (Reverse). */
+  private botClips(): void {
+    const game = this.room.game;
+    if (!game) return;
+    const bots = this.room.players.filter((p) => p.bot).map((p) => `${p.id}-`);
+    for (const id of this.modules[game.id].clips?.(game.state) ?? []) {
+      if (!hasClip(id) && bots.some((b) => id.startsWith(b))) putClip(id, botClip());
+    }
   }
 
   private member(id: PlayerId): Member | undefined {

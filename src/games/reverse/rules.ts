@@ -10,6 +10,7 @@ import {
   type Timed,
 } from '../../platform/module';
 import { shuffle } from '../../platform/rng';
+import { BOT_WORDS, pick } from '../bots';
 import { addPoints } from '../../platform/scores';
 import { cleanText } from '../../platform/text';
 
@@ -309,6 +310,20 @@ export const reverse: GameModule<ReverseState, ReverseSettings> = {
               }))
           : [],
     };
+  },
+
+  botAction(s, bot, rng) {
+    if (s.phase === 'record' && !s.locked.includes(bot)) {
+      const words = shuffle(BOT_WORDS, rng).slice(0, s.rounds);
+      // The TV makes a placeholder recording for each clip id starting with the bot's id.
+      return { type: 'lockIn', words: words.map((text, i) => ({ text, clip: `${bot}-word-${i}` })) };
+    }
+    if (s.phase === 'guess') {
+      const a = s.attempts.find((x) => x.guesser === bot);
+      if (!a || a.guess !== null) return null;
+      return { type: 'guess', text: rng() < 0.3 ? s.words[a.word]!.text : pick(BOT_WORDS, rng) };
+    }
+    return null;
   },
 
   scores: (s) => s.scores,

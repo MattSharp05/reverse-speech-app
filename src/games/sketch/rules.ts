@@ -10,6 +10,7 @@ import {
   type Timed,
 } from '../../platform/module';
 import { shuffle } from '../../platform/rng';
+import { BOT_ANSWERS, pick, scribble } from '../bots';
 import { addPoints } from '../../platform/scores';
 import { cleanText, sameAnswer } from '../../platform/text';
 
@@ -375,6 +376,28 @@ export const sketchIt: GameModule<SketchState, SketchSettings> = {
       vote: s.votes[id] ?? null,
       own: s.options.map((o, i) => (o.authors.includes(id) ? i : -1)).filter((i) => i >= 0),
     };
+  },
+
+  botAction(s, bot, rng) {
+    if (s.phase === 'draw') {
+      const mine = s.sketches.find((x) => x.artist === bot);
+      return mine && !mine.drawing ? { type: 'draw', drawing: scribble(rng, CANVAS_W, CANVAS_H) } : null;
+    }
+    if (s.phase === 'caption' && nonArtists(s).includes(bot) && !s.captions[bot]) {
+      const truth = sketch(s).prompt.text;
+      const decoys = s.deck.map((d) => d.text).filter((t) => !sameAnswer(t, truth));
+      return {
+        type: 'caption',
+        text: decoys.length && rng() < 0.7 ? pick(decoys, rng) : pick(BOT_ANSWERS, rng),
+      };
+    }
+    if (s.phase === 'vote' && nonArtists(s).includes(bot) && s.votes[bot] === undefined) {
+      const options = s.options.map((_, i) => i).filter((i) => !s.options[i]!.authors.includes(bot));
+      if (!options.length) return null;
+      const truth = s.options.findIndex((o) => o.truth);
+      return { type: 'vote', option: rng() < 0.35 ? truth : pick(options, rng) };
+    }
+    return null;
   },
 
   scores: (s) => s.scores,
