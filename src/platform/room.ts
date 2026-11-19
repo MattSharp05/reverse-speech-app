@@ -75,10 +75,7 @@ export function newRoom(code: string): RoomState {
 
 export function cleanName(name: unknown, taken: string[]): string {
   const base =
-    (typeof name === 'string' ? name : '')
-      .replace(/\s+/g, ' ')
-      .trim()
-      .slice(0, NAME_MAX) || 'Player';
+    (typeof name === 'string' ? name : '').replace(/\s+/g, ' ').trim().slice(0, NAME_MAX) || 'Player';
   const lower = taken.map((n) => n.toLowerCase());
   if (!lower.includes(base.toLowerCase())) return base;
   for (let n = 2; ; n++) {
@@ -185,7 +182,10 @@ export function reduceRoom(room: RoomState, action: RoomAction, modules: Modules
         def.options.some((o) => o.value === action.value) ||
         (action.key === 'category' && typeof action.value === 'string' && action.value.length <= 40);
       if (!valid) return room;
-      const settings = { ...room.settings, [action.game]: { ...room.settings[action.game], [action.key]: action.value } };
+      const settings = {
+        ...room.settings,
+        [action.game]: { ...room.settings[action.game], [action.key]: action.value },
+      };
       return { ...room, settings };
     }
 
@@ -224,7 +224,8 @@ export function reduceRoom(room: RoomState, action: RoomAction, modules: Modules
 
     case 'tick': {
       const deadline = room.game?.state.deadline;
-      if (room.paused !== null || deadline === null || deadline === undefined || ctx.now < deadline) return room;
+      if (room.paused !== null || deadline === null || deadline === undefined || ctx.now < deadline)
+        return room;
       return withGame(room, modules, (m, s) => m.advance(s, ctx));
     }
   }

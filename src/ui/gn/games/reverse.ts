@@ -68,8 +68,19 @@ function tv({ room, view: v, players, paused }: TvCtx<View>): HTMLElement {
               'article',
               { class: `gn-attempt${a.done ? ' done' : ''}`, style: `--i:${i}` },
               avatar(players.get(a.guesser), 'md'),
-              h('p', {}, nameTag(players.get(a.guesser)), ' is decoding ', nameTag(players.get(a.owner)), '’s word'),
-              h('span', { class: 'gn-attempt-state' }, a.done ? 'Guessed ✓' : a.copied ? 'Copied 🎙️' : 'Listening 👂'),
+              h(
+                'p',
+                {},
+                nameTag(players.get(a.guesser)),
+                ' is decoding ',
+                nameTag(players.get(a.owner)),
+                '’s word',
+              ),
+              h(
+                'span',
+                { class: 'gn-attempt-state' },
+                a.done ? 'Guessed ✓' : a.copied ? 'Copied 🎙️' : 'Listening 👂',
+              ),
             ),
           ),
         ),
@@ -85,27 +96,49 @@ function tv({ room, view: v, players, paused }: TvCtx<View>): HTMLElement {
           v.attempts.map((a, i) =>
             h(
               'article',
-              { class: `gn-attempt ${a.correct || a.counted ? 'right' : 'wrong'}`, style: `--i:${i}`, 'data-testid': 'attempt' },
+              {
+                class: `gn-attempt ${a.correct || a.counted ? 'right' : 'wrong'}`,
+                style: `--i:${i}`,
+                'data-testid': 'attempt',
+              },
               avatar(players.get(a.guesser), 'md'),
               h(
                 'div',
                 { class: 'gn-attempt-body' },
                 h('p', {}, nameTag(players.get(a.guesser)), ' guessed ', h('b', {}, `“${a.guess ?? '…'}”`)),
-                h('p', { class: 'gn-muted' }, nameTag(players.get(a.owner)), '’s word was ', h('b', {}, a.word ?? '')),
+                h(
+                  'p',
+                  { class: 'gn-muted' },
+                  nameTag(players.get(a.owner)),
+                  '’s word was ',
+                  h('b', {}, a.word ?? ''),
+                ),
                 h(
                   'div',
                   { class: 'gn-attempt-play' },
                   playButton({ label: 'Backwards', clip: a.wordClip, reverse: true, kind: 'gn-play' }),
-                  a.mimic ? playButton({ label: 'Copy, flipped', clip: a.mimic, reverse: true, kind: 'gn-play' }) : null,
+                  a.mimic
+                    ? playButton({ label: 'Copy, flipped', clip: a.mimic, reverse: true, kind: 'gn-play' })
+                    : null,
                 ),
               ),
-              h('span', { class: 'gn-verdict' }, a.correct ? 'Correct!' : a.counted ? 'Counted!' : 'Nope', gainedBadge(a.correct || a.counted ? 1 : 0)),
+              h(
+                'span',
+                { class: 'gn-verdict' },
+                a.correct ? 'Correct!' : a.counted ? 'Counted!' : 'Nope',
+                gainedBadge(a.correct || a.counted ? 1 : 0),
+              ),
             ),
           ),
         ),
       );
     case 'done':
-      return h('section', { class: 'gn-stage' }, tvHead('Reverse', 'Scores', null, paused), scoreList(room, v.scores, v.gained));
+      return h(
+        'section',
+        { class: 'gn-stage' },
+        tvHead('Reverse', 'Scores', null, paused),
+        scoreList(room, v.scores, v.gained),
+      );
   }
 }
 
@@ -114,7 +147,11 @@ const wordClips = new Map<string, string>();
 
 function recordWords(v: View, priv: Priv, send: (a: unknown) => void, paused: boolean): HTMLElement {
   const rows = Array.from({ length: priv.words }, (_, i) => i);
-  const lock = h('button', { class: 'gn-btn primary', type: 'button', 'data-testid': 'lock-in' }, 'Lock in my words');
+  const lock = h(
+    'button',
+    { class: 'gn-btn primary', type: 'button', 'data-testid': 'lock-in' },
+    'Lock in my words',
+  );
   const key = (i: number) => `rev-word-${i}`;
   const sync = () => {
     const left = rows.filter((i) => !(drafts.get(key(i)) ?? '').trim() || !wordClips.has(key(i))).length;
@@ -122,9 +159,15 @@ function recordWords(v: View, priv: Priv, send: (a: unknown) => void, paused: bo
     lock.textContent = left ? `${left} to go…` : '🔒 Lock in my words';
   };
   const list = rows.map((i) => {
-    const input = draftInput(key(i), { placeholder: `Word ${i + 1}`, maxLength: WORD_MAX, autocapitalize: 'none', 'data-testid': `word-${i}` });
+    const input = draftInput(key(i), {
+      placeholder: `Word ${i + 1}`,
+      maxLength: WORD_MAX,
+      autocapitalize: 'none',
+      'data-testid': `word-${i}`,
+    });
     input.addEventListener('input', sync);
-    const listen = () => playButton({ label: '', clip: wordClips.get(key(i)) ?? null, kind: 'icon', testId: `listen-${i}` });
+    const listen = () =>
+      playButton({ label: '', clip: wordClips.get(key(i)) ?? null, kind: 'icon', testId: `listen-${i}` });
     let slot = listen();
     const rec = recordButton({
       label: 'Record',
@@ -142,8 +185,12 @@ function recordWords(v: View, priv: Priv, send: (a: unknown) => void, paused: bo
     return h('li', { class: 'gn-word-row' }, h('span', { class: 'gn-num' }, String(i + 1)), input, rec, slot);
   });
   lock.addEventListener('click', () => {
-    const words = rows.map((i) => ({ text: (drafts.get(key(i)) ?? '').trim(), clip: wordClips.get(key(i)) ?? '' }));
-    if (new Set(words.map((w) => w.text.toLowerCase())).size !== words.length) return toast('Use different words.');
+    const words = rows.map((i) => ({
+      text: (drafts.get(key(i)) ?? '').trim(),
+      clip: wordClips.get(key(i)) ?? '',
+    }));
+    if (new Set(words.map((w) => w.text.toLowerCase())).size !== words.length)
+      return toast('Use different words.');
     send({ type: 'lockIn', words });
     rows.forEach((i) => {
       drafts.delete(key(i));
@@ -155,7 +202,11 @@ function recordWords(v: View, priv: Priv, send: (a: unknown) => void, paused: bo
     'div',
     { class: 'gn-phone-stack' },
     phoneHead('Your secret words', v.deadline, paused),
-    h('p', { class: 'gn-hint' }, 'Type each word, tap Record and say it clearly. Short single words work best.'),
+    h(
+      'p',
+      { class: 'gn-hint' },
+      'Type each word, tap Record and say it clearly. Short single words work best.',
+    ),
     h('ol', { class: 'gn-words' }, list),
     lock,
   );
@@ -172,8 +223,17 @@ function phone({ view: v, priv, send, paused, sending, players }: PhoneCtx<View,
       if (!a) return lookUp('No word for you this round. Watch the TV');
       if (a.guess !== null) return phoneNote('🤞', 'Guess in!', `“${a.guess}”`, 'guessed');
       const key = `rev-guess-${v.round}`;
-      const input = draftInput(key, { placeholder: 'What’s the word?', maxLength: WORD_MAX, autocapitalize: 'none', 'data-testid': 'guess-input' });
-      const go = h('button', { class: 'gn-btn primary', type: 'button', 'data-testid': 'guess', disabled: sending }, 'Guess!');
+      const input = draftInput(key, {
+        placeholder: 'What’s the word?',
+        maxLength: WORD_MAX,
+        autocapitalize: 'none',
+        'data-testid': 'guess-input',
+      });
+      const go = h(
+        'button',
+        { class: 'gn-btn primary', type: 'button', 'data-testid': 'guess', disabled: sending },
+        'Guess!',
+      );
       const submit = () => {
         const text = input.value.trim();
         if (!text) return toast('Type your guess first.');
@@ -189,7 +249,18 @@ function phone({ view: v, priv, send, paused, sending, players }: PhoneCtx<View,
         h(
           'ol',
           { class: 'gn-steps phone' },
-          h('li', {}, h('b', {}, 'Hear it backwards'), playButton({ label: 'Play backwards', clip: a.clip, reverse: true, kind: 'gn-play', testId: 'play-reversed' })),
+          h(
+            'li',
+            {},
+            h('b', {}, 'Hear it backwards'),
+            playButton({
+              label: 'Play backwards',
+              clip: a.clip,
+              reverse: true,
+              kind: 'gn-play',
+              testId: 'play-reversed',
+            }),
+          ),
           h(
             'li',
             {},
@@ -202,7 +273,18 @@ function phone({ view: v, priv, send, paused, sending, players }: PhoneCtx<View,
               onClip: (id) => send({ type: 'mimic', clip: id }),
             }),
           ),
-          h('li', {}, h('b', {}, 'Hear your copy flipped'), playButton({ label: 'Play it flipped', clip: a.mimic, reverse: true, kind: 'gn-play', testId: 'play-mimic' })),
+          h(
+            'li',
+            {},
+            h('b', {}, 'Hear your copy flipped'),
+            playButton({
+              label: 'Play it flipped',
+              clip: a.mimic,
+              reverse: true,
+              kind: 'gn-play',
+              testId: 'play-mimic',
+            }),
+          ),
           h('li', {}, h('b', {}, 'Your guess'), h('div', { class: 'gn-answer-row' }, input, go)),
         ),
       );

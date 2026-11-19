@@ -81,7 +81,9 @@ describe('room', () => {
 
   it('validates settings', () => {
     const room = roomWith(3);
-    expect(run(room, { type: 'setting', game: 'quip', key: 'rounds', value: 3 }).settings.quip).toEqual({ rounds: 3 });
+    expect(run(room, { type: 'setting', game: 'quip', key: 'rounds', value: 3 }).settings.quip).toEqual({
+      rounds: 3,
+    });
     expect(run(room, { type: 'setting', game: 'quip', key: 'rounds', value: 99 })).toBe(room);
     expect(run(room, { type: 'setting', game: 'quip', key: 'nope', value: 1 })).toBe(room);
   });
@@ -105,7 +107,12 @@ describe('room', () => {
   });
 
   it('skips, records results and Game Night wins, then returns to the lobby', () => {
-    let room = run(roomWith(2), { type: 'select', game: 'bluff' }, { type: 'setting', game: 'bluff', key: 'questions', value: 4 }, { type: 'start' });
+    let room = run(
+      roomWith(2),
+      { type: 'select', game: 'bluff' },
+      { type: 'setting', game: 'bluff', key: 'questions', value: 4 },
+      { type: 'start' },
+    );
     for (let i = 0; i < 40 && !room.game!.over; i++) room = run(room, { type: 'skip' });
     expect(room.game!.over).toBe(true);
     expect(room.result?.game).toBe('bluff');

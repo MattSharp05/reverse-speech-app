@@ -4,7 +4,16 @@ import type { PlayerId } from '../platform/module';
 import { MAX_PLAYERS } from '../platform/room';
 import { randomId } from '../platform/rng';
 import type { Channel } from './channel';
-import { cryptoAvailable, loadIdentity, newIdentity, seal, sharedKey, unseal, type Identity, type SavedIdentity } from './crypto';
+import {
+  cryptoAvailable,
+  loadIdentity,
+  newIdentity,
+  seal,
+  sharedKey,
+  unseal,
+  type Identity,
+  type SavedIdentity,
+} from './crypto';
 import type { GnMessage, PlayerAction, PrivateSlot, PublicRoom } from './gnProtocol';
 import { ClipAssembler, splitClip } from './protocol';
 

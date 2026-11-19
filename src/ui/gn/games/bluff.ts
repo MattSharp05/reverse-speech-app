@@ -43,11 +43,14 @@ function question(text: string): HTMLElement {
   return h(
     'span',
     {},
-    parts.flatMap((part, i) => (i < parts.length - 1 ? [part, h('span', { class: 'gn-blank' }, '')] : [part])),
+    parts.flatMap((part, i) =>
+      i < parts.length - 1 ? [part, h('span', { class: 'gn-blank' }, '')] : [part],
+    ),
   );
 }
 
-const kicker = (v: View) => `Question ${v.index + 1} of ${v.count}${v.final ? ' · double points' : ''} · ${v.category}`;
+const kicker = (v: View) =>
+  `Question ${v.index + 1} of ${v.count}${v.final ? ' · double points' : ''} · ${v.category}`;
 
 function tv({ room, view: v, players, paused }: TvCtx<View>): HTMLElement {
   switch (v.phase) {
@@ -72,7 +75,11 @@ function tv({ room, view: v, players, paused }: TvCtx<View>): HTMLElement {
           (v.options ?? []).map((o, i) =>
             h(
               'article',
-              { class: `gn-option${reveal && o.truth ? ' truth' : ''}${reveal && !o.truth ? ' lie' : ''}`, style: `--i:${i}`, 'data-testid': 'option' },
+              {
+                class: `gn-option${reveal && o.truth ? ' truth' : ''}${reveal && !o.truth ? ' lie' : ''}`,
+                style: `--i:${i}`,
+                'data-testid': 'option',
+              },
               h('p', {}, o.text),
               reveal &&
                 h(
@@ -84,7 +91,11 @@ function tv({ room, view: v, players, paused }: TvCtx<View>): HTMLElement {
                     o.truth ? 'THE TRUTH' : o.house ? 'House lie' : 'Lie by',
                     ...(o.authors ?? []).map((id) => nameTag(players.get(id))),
                   ),
-                  h('span', { class: 'gn-votes' }, (o.pickedBy ?? []).map((id) => avatar(players.get(id), 'sm'))),
+                  h(
+                    'span',
+                    { class: 'gn-votes' },
+                    (o.pickedBy ?? []).map((id) => avatar(players.get(id), 'sm')),
+                  ),
                 ),
             ),
           ),
@@ -96,7 +107,12 @@ function tv({ room, view: v, players, paused }: TvCtx<View>): HTMLElement {
     }
     case 'scores':
     case 'done':
-      return h('section', { class: 'gn-stage' }, tvHead(kicker(v), 'Scores', null, paused), scoreList(room, v.scores, v.gained));
+      return h(
+        'section',
+        { class: 'gn-stage' },
+        tvHead(kicker(v), 'Scores', null, paused),
+        scoreList(room, v.scores, v.gained),
+      );
   }
 }
 
@@ -112,7 +128,11 @@ function phone({ view: v, priv, send, paused, sending }: PhoneCtx<View, Priv>): 
         phoneHead('Write a lie', v.deadline, paused),
         h('p', { class: 'gn-prompt small' }, question(v.question)),
         priv.rejected === 'truth'
-          ? h('p', { class: 'gn-alert', 'data-testid': 'rejected' }, 'That’s the real answer! Well done, but write a lie instead.')
+          ? h(
+              'p',
+              { class: 'gn-alert', 'data-testid': 'rejected' },
+              'That’s the real answer! Well done, but write a lie instead.',
+            )
           : null,
         answerBox({
           input: draftInput(key, {}),

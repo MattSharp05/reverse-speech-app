@@ -11,7 +11,13 @@ function setup(n = 4, settings = {}) {
 function answerAll(s: QuipState, ctx: ReturnType<typeof testCtx>): QuipState {
   s = quip.advance(s, ctx); // intro → answer
   for (const [index, m] of s.matchups.entries())
-    for (const author of m.authors) s = quip.act(s, author, { type: 'answer', matchup: index, text: `answer ${index}-${m.authors.indexOf(author)}` }, ctx);
+    for (const author of m.authors)
+      s = quip.act(
+        s,
+        author,
+        { type: 'answer', matchup: index, text: `answer ${index}-${m.authors.indexOf(author)}` },
+        ctx,
+      );
   return s;
 }
 
@@ -29,7 +35,11 @@ describe('quip battle', () => {
 
   it('keeps adult prompts out of family games', () => {
     const { s } = setup(4);
-    const adult = new Set(testCtx().content.quip.filter((p) => p.maturity === 'adult').map((p) => p.id));
+    const adult = new Set(
+      testCtx()
+        .content.quip.filter((p) => p.maturity === 'adult')
+        .map((p) => p.id),
+    );
     expect([...s.used, ...s.deck.map((d) => d.id)].some((id) => adult.has(id))).toBe(false);
   });
 
@@ -63,7 +73,9 @@ describe('quip battle', () => {
     const { ctx, s: s0 } = setup(4);
     let s = answerAll(s0, ctx);
     const m = s.matchups[0]!;
-    const voters = players(4).map((p) => p.id).filter((id) => !m.authors.includes(id));
+    const voters = players(4)
+      .map((p) => p.id)
+      .filter((id) => !m.authors.includes(id));
     for (const v of voters) s = quip.act(s, v, { type: 'vote', choice: 0 }, ctx);
     expect(s.phase).toBe('result');
     // 2 votes × 100 + win 100 + sweep 200.
@@ -94,7 +106,8 @@ describe('quip battle', () => {
   it('plays rounds, then a final everyone answers with three votes each, then ends', () => {
     const { ctx, s: s0 } = setup(4, { rounds: 1 });
     let s = s0;
-    for (let i = 0; i < 30 && !(s.hasFinal && s.round === 1 && s.phase === 'answer'); i++) s = quip.advance(s, ctx);
+    for (let i = 0; i < 30 && !(s.hasFinal && s.round === 1 && s.phase === 'answer'); i++)
+      s = quip.advance(s, ctx);
     expect(s.matchups).toHaveLength(1);
     expect(s.matchups[0]!.authors).toHaveLength(4);
     for (const p of players(4)) s = quip.act(s, p.id, { type: 'answer', matchup: 0, text: `${p.id}!` }, ctx);

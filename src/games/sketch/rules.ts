@@ -1,5 +1,14 @@
 import { deal, maturityOk } from '../../content/deal';
-import { asInt, asRecord, secs, type Ctx, type GameModule, type Player, type PlayerId, type Timed } from '../../platform/module';
+import {
+  asInt,
+  asRecord,
+  secs,
+  type Ctx,
+  type GameModule,
+  type Player,
+  type PlayerId,
+  type Timed,
+} from '../../platform/module';
 import { shuffle } from '../../platform/rng';
 import { addPoints } from '../../platform/scores';
 import { cleanText, sameAnswer } from '../../platform/text';
@@ -191,7 +200,12 @@ function next(s: SketchState, ctx: Ctx): SketchState {
     case 'draw':
       return afterDrawing(s, ctx);
     case 'caption':
-      return { ...s, phase: 'vote', options: buildOptions(s, ctx), deadline: ctx.now + secs(s.settings.voteSecs) };
+      return {
+        ...s,
+        phase: 'vote',
+        options: buildOptions(s, ctx),
+        deadline: ctx.now + secs(s.settings.voteSecs),
+      };
     case 'vote':
       return reveal(s, ctx);
     case 'reveal':
@@ -211,8 +225,16 @@ export const sketchIt: GameModule<SketchState, SketchSettings> = {
   maxPlayers: 10,
   settings: [
     { key: 'rounds', label: 'Rounds', options: [1, 2].map((n) => ({ value: n, label: String(n) })) },
-    { key: 'drawSecs', label: 'Drawing time', options: [60, 80, 100, 120].map((n) => ({ value: n, label: `${n}s` })) },
-    { key: 'captionSecs', label: 'Caption time', options: [30, 45, 60].map((n) => ({ value: n, label: `${n}s` })) },
+    {
+      key: 'drawSecs',
+      label: 'Drawing time',
+      options: [60, 80, 100, 120].map((n) => ({ value: n, label: `${n}s` })),
+    },
+    {
+      key: 'captionSecs',
+      label: 'Caption time',
+      options: [30, 45, 60].map((n) => ({ value: n, label: `${n}s` })),
+    },
     { key: 'voteSecs', label: 'Vote time', options: [15, 20, 30].map((n) => ({ value: n, label: `${n}s` })) },
     {
       key: 'maturity',
@@ -229,7 +251,9 @@ export const sketchIt: GameModule<SketchState, SketchSettings> = {
     const rounds = Math.max(1, Math.min(2, Number(settings.rounds) || 1));
     // Enough to draw, plus spares the house uses as decoys.
     const need = rounds * players.length + 6;
-    const dealt = deal(ctx.content.sketch, need, ctx.rng, ctx.content.recent, (p) => maturityOk(settings.maturity, p));
+    const dealt = deal(ctx.content.sketch, need, ctx.rng, ctx.content.recent, (p) =>
+      maturityOk(settings.maturity, p),
+    );
     const s: SketchState = {
       phase: 'draw',
       deadline: null,
@@ -271,14 +295,24 @@ export const sketchIt: GameModule<SketchState, SketchSettings> = {
       if (!nonArtists(s).includes(from) || s.captions[from]) return s;
       const text = cleanText(action.text, CAPTION_MAX);
       if (!text) return s;
-      if (sameAnswer(text, sketch(s).prompt.text)) return { ...s, rejected: { ...s.rejected, [from]: 'truth' } };
-      const next1 = { ...s, captions: { ...s.captions, [from]: text }, rejected: { ...s.rejected, [from]: null } };
+      if (sameAnswer(text, sketch(s).prompt.text))
+        return { ...s, rejected: { ...s.rejected, [from]: 'truth' } };
+      const next1 = {
+        ...s,
+        captions: { ...s.captions, [from]: text },
+        rejected: { ...s.rejected, [from]: null },
+      };
       return nonArtists(next1).every((id) => next1.captions[id]) ? next(next1, ctx) : next1;
     }
     if (action.type === 'vote' && s.phase === 'vote') {
       const index = asInt(action.option);
       const option = index === null ? undefined : s.options[index];
-      if (!option || !nonArtists(s).includes(from) || s.votes[from] !== undefined || option.authors.includes(from))
+      if (
+        !option ||
+        !nonArtists(s).includes(from) ||
+        s.votes[from] !== undefined ||
+        option.authors.includes(from)
+      )
         return s;
       const next1 = { ...s, votes: { ...s.votes, [from]: index! } };
       return nonArtists(next1).every((id) => next1.votes[id] !== undefined) ? next(next1, ctx) : next1;
@@ -308,7 +342,11 @@ export const sketchIt: GameModule<SketchState, SketchSettings> = {
               truth: revealed ? o.truth : null,
               authors: revealed ? o.authors : null,
               house: revealed ? o.house : null,
-              votedBy: revealed ? Object.entries(s.votes).filter(([, v]) => v === i).map(([id]) => id) : null,
+              votedBy: revealed
+                ? Object.entries(s.votes)
+                    .filter(([, v]) => v === i)
+                    .map(([id]) => id)
+                : null,
             }))
           : null,
       prompt: revealed ? current!.prompt.text : null,

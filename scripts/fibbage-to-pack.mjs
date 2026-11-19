@@ -19,4 +19,7 @@ const bluff = [...(data.normal ?? []), ...(data.final ?? [])].map((q) => ({
   decoys: (q.suggestions ?? []).slice(0, 6),
   category: q.category ?? 'fibbage',
 }));
-process.stdout.write(JSON.stringify({ id: 'fibbage-private', title: 'Private Fibbage pack', license: 'private use', bluff }) + '\n');
+process.stdout.write(
+  JSON.stringify({ id: 'fibbage-private', title: 'Private Fibbage pack', license: 'private use', bluff }) +
+    '\n',
+);

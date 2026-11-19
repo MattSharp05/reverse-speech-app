@@ -1,5 +1,14 @@
 import { judge } from '../../game/match';
-import { asInt, asRecord, secs, type Ctx, type GameModule, type Player, type PlayerId, type Timed } from '../../platform/module';
+import {
+  asInt,
+  asRecord,
+  secs,
+  type Ctx,
+  type GameModule,
+  type Player,
+  type PlayerId,
+  type Timed,
+} from '../../platform/module';
 import { shuffle } from '../../platform/rng';
 import { addPoints } from '../../platform/scores';
 import { cleanText } from '../../platform/text';
@@ -58,20 +67,42 @@ export interface ReverseState extends Timed {
 const validClip = (v: unknown): v is string => typeof v === 'string' && /^[\w-]{3,60}$/.test(v);
 export const scoredAttempt = (a: Attempt) => a.correct || a.counted;
 
-/** Deals each player an unused word that isn't theirs, spreading owners where it can. */
+/**
+ * Deals each player an unused word that isn't theirs, spreading owners where it can. A few
+ * random tries, keeping the one that deals to the most players (greedy dealing can strand the
+ * last player with only their own words left).
+ */
 export function dealWords(s: ReverseState, ctx: Ctx): Attempt[] {
+  let best: Attempt[] = [];
+  for (let attempt = 0; attempt < 12 && best.length < s.players.length; attempt++) {
+    const dealt = dealOnce(s, ctx);
+    if (dealt.length > best.length) best = dealt;
+  }
+  return best;
+}
+
+function dealOnce(s: ReverseState, ctx: Ctx): Attempt[] {
   const used = new Set(s.dealt);
   const ownersThisRound = new Map<PlayerId, number>();
   const attempts: Attempt[] = [];
   for (const p of shuffle(s.players, ctx.rng)) {
-    const candidates = s.words.map((w, i) => ({ w, i })).filter(({ w, i }) => !used.has(i) && w.owner !== p.id);
+    const candidates = s.words
+      .map((w, i) => ({ w, i }))
+      .filter(({ w, i }) => !used.has(i) && w.owner !== p.id);
     if (!candidates.length) continue;
     const least = Math.min(...candidates.map(({ w }) => ownersThisRound.get(w.owner) ?? 0));
     const best = candidates.filter(({ w }) => (ownersThisRound.get(w.owner) ?? 0) === least);
     const choice = best[Math.floor(ctx.rng() * best.length)]!;
     used.add(choice.i);
     ownersThisRound.set(choice.w.owner, least + 1);
-    attempts.push({ guesser: p.id, word: choice.i, mimic: null, guess: null, correct: false, counted: false });
+    attempts.push({
+      guesser: p.id,
+      word: choice.i,
+      mimic: null,
+      guess: null,
+      correct: false,
+      counted: false,
+    });
   }
   return attempts;
 }
@@ -126,9 +157,21 @@ export const reverse: GameModule<ReverseState, ReverseSettings> = {
   minPlayers: 2,
   maxPlayers: 10,
   settings: [
-    { key: 'words', label: 'Words each (rounds)', options: [2, 3, 4, 5].map((n) => ({ value: n, label: String(n) })) },
-    { key: 'recordSecs', label: 'Recording time', options: [90, 120, 180].map((n) => ({ value: n, label: `${n}s` })) },
-    { key: 'guessSecs', label: 'Guess time', options: [60, 90, 120].map((n) => ({ value: n, label: `${n}s` })) },
+    {
+      key: 'words',
+      label: 'Words each (rounds)',
+      options: [2, 3, 4, 5].map((n) => ({ value: n, label: String(n) })),
+    },
+    {
+      key: 'recordSecs',
+      label: 'Recording time',
+      options: [90, 120, 180].map((n) => ({ value: n, label: `${n}s` })),
+    },
+    {
+      key: 'guessSecs',
+      label: 'Guess time',
+      options: [60, 90, 120].map((n) => ({ value: n, label: `${n}s` })),
+    },
   ],
   defaults: { words: 3, recordSecs: 120, guessSecs: 90 },
 
@@ -140,7 +183,11 @@ export const reverse: GameModule<ReverseState, ReverseSettings> = {
       round: 0,
       rounds,
       players,
-      settings: { words: rounds, recordSecs: Number(settings.recordSecs), guessSecs: Number(settings.guessSecs) },
+      settings: {
+        words: rounds,
+        recordSecs: Number(settings.recordSecs),
+        guessSecs: Number(settings.guessSecs),
+      },
       words: [],
       locked: [],
       dealt: [],
@@ -154,7 +201,8 @@ export const reverse: GameModule<ReverseState, ReverseSettings> = {
     const action = asRecord(raw);
     if (!s.players.some((p) => p.id === from)) return s;
     if (action.type === 'lockIn' && s.phase === 'record') {
-      if (s.locked.includes(from) || !Array.isArray(action.words) || action.words.length !== s.rounds) return s;
+      if (s.locked.includes(from) || !Array.isArray(action.words) || action.words.length !== s.rounds)
+        return s;
       const words: Word[] = [];
       for (const raw2 of action.words) {
         const w = asRecord(raw2);
@@ -170,7 +218,10 @@ export const reverse: GameModule<ReverseState, ReverseSettings> = {
     const attempt = s.attempts[mine];
     if (action.type === 'mimic' && s.phase === 'guess') {
       if (!attempt || attempt.guess !== null || !validClip(action.clip)) return s;
-      return { ...s, attempts: s.attempts.map((a, i) => (i === mine ? { ...a, mimic: action.clip as string } : a)) };
+      return {
+        ...s,
+        attempts: s.attempts.map((a, i) => (i === mine ? { ...a, mimic: action.clip as string } : a)),
+      };
     }
     if (action.type === 'guess' && s.phase === 'guess') {
       const text = cleanText(action.text, WORD_MAX);
@@ -188,7 +239,12 @@ export const reverse: GameModule<ReverseState, ReverseSettings> = {
       const gained = { ...s.gained };
       addPoints(scores, a.guesser, 1);
       addPoints(gained, a.guesser, 1);
-      return { ...s, scores, gained, attempts: s.attempts.map((x, i) => (i === index ? { ...x, counted: true } : x)) };
+      return {
+        ...s,
+        scores,
+        gained,
+        attempts: s.attempts.map((x, i) => (i === index ? { ...x, counted: true } : x)),
+      };
     }
     return s;
   },
@@ -245,7 +301,12 @@ export const reverse: GameModule<ReverseState, ReverseSettings> = {
           ? s.attempts
               .map((x, i) => ({ x, i }))
               .filter(({ x }) => s.words[x.word]!.owner === id && !scoredAttempt(x) && x.guess !== null)
-              .map(({ x, i }) => ({ attempt: i, guess: x.guess, word: s.words[x.word]!.text, guesser: x.guesser }))
+              .map(({ x, i }) => ({
+                attempt: i,
+                guess: x.guess,
+                word: s.words[x.word]!.text,
+                guesser: x.guesser,
+              }))
           : [],
     };
   },

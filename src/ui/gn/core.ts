@@ -60,7 +60,8 @@ export const GAMES: Record<GameId, GameInfo> = {
   },
 };
 
-export const colorOf = (p: { color: number } | undefined): string => PLAYER_COLORS[(p?.color ?? 0) % PLAYER_COLORS.length]!;
+export const colorOf = (p: { color: number } | undefined): string =>
+  PLAYER_COLORS[(p?.color ?? 0) % PLAYER_COLORS.length]!;
 
 export function playerMap(room: PublicRoom): Map<PlayerId, PublicPlayer> {
   return new Map(room.players.map((p) => [p.id, p]));
@@ -135,7 +136,9 @@ export function draftInput(
     : h('input', { type: 'text', autocomplete: 'off', ...rest, 'data-draft': key });
   el.value = drafts.get(key) ?? '';
   el.addEventListener('input', () => drafts.set(key, el.value));
-  el.addEventListener('focus', () => setTimeout(() => el.scrollIntoView({ block: 'center', behavior: 'smooth' }), 250));
+  el.addEventListener('focus', () =>
+    setTimeout(() => el.scrollIntoView({ block: 'center', behavior: 'smooth' }), 250),
+  );
   return el;
 }
 
@@ -161,7 +164,11 @@ export function gainedBadge(points: number | undefined): HTMLElement | null {
   return h('span', { class: 'gn-gain' }, `+${points.toLocaleString()}`);
 }
 
-export function scoreList(room: PublicRoom, scores: Record<PlayerId, number>, gained: Record<PlayerId, number> = {}): HTMLElement {
+export function scoreList(
+  room: PublicRoom,
+  scores: Record<PlayerId, number>,
+  gained: Record<PlayerId, number> = {},
+): HTMLElement {
   const players = playerMap(room);
   const ids = room.game?.players ?? Object.keys(scores);
   const rows = ids

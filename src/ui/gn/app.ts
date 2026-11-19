@@ -1,6 +1,13 @@
 import { onClip } from '../../audio/clips';
 import { stopPlayback, unlock } from '../../audio/engine';
-import { customPacks, loadLibrary, parseCsvPack, parsePack, rememberUsed, saveCustomPacks } from '../../content/library';
+import {
+  customPacks,
+  loadLibrary,
+  parseCsvPack,
+  parsePack,
+  rememberUsed,
+  saveCustomPacks,
+} from '../../content/library';
 import type { ContentLibrary, Pack } from '../../content/schema';
 import { categories } from '../../content/deal';
 import { GAME_IDS, modules } from '../../games/registry';
@@ -26,7 +33,8 @@ const UIS: Record<GameId, GameUi> = { reverse: reverseUi, quip: quipUi, bluff: b
 
 /** Room codes: no look-alike characters (from kart-racer's `ROOM_CODE_ALPHABET`). */
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-const newCode = () => Array.from({ length: 4 }, () => CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)]).join('');
+const newCode = () =>
+  Array.from({ length: 4 }, () => CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)]).join('');
 export const cleanGnCode = (text: string) =>
   text
     .toUpperCase()
@@ -110,7 +118,8 @@ export class GameNight {
     const tv = cleanGnCode(params.get('tv') ?? '');
     const join = cleanGnCode(params.get('join') ?? '');
     if (tv && store.get(`gn:host:${tv}`)) void this.hostRoom(tv);
-    else if (join && tabStorage.getItem(`gn:me:${join}`) && store.get('gn:name')) void this.joinRoom(join, store.get('gn:name')!);
+    else if (join && tabStorage.getItem(`gn:me:${join}`))
+      void this.joinRoom(join, tabStorage.getItem('gn:name') ?? store.get('gn:name') ?? 'Player');
     else if (join) this.go({ name: 'join', code: join });
     else this.render();
   }
@@ -167,6 +176,7 @@ export class GameNight {
   async joinRoom(code: string, name: string): Promise<void> {
     if (!onlineAvailable()) return toast('Online play isn’t set up (Supabase env vars missing).');
     store.set('gn:name', name);
+    tabStorage.setItem('gn:name', name);
     this.go({ name: 'busy', text: `Joining room ${code}…` });
     try {
       const channel = await openChannel<GnMessage>(code, 'gn');
@@ -192,7 +202,14 @@ export class GameNight {
   // ---- Rendering -----------------------------------------------------------------------
 
   private key(): string {
-    if (this.view.name === 'tv' && this.host) return JSON.stringify(['tv', this.host.publicRoom(), this.packsOpen, isMuted(), this.host.room.settings]);
+    if (this.view.name === 'tv' && this.host)
+      return JSON.stringify([
+        'tv',
+        this.host.publicRoom(),
+        this.packsOpen,
+        isMuted(),
+        this.host.room.settings,
+      ]);
     if (this.view.name === 'phone' && this.client) {
       const c = this.client;
       const room = c.room;
@@ -206,7 +223,15 @@ export class GameNight {
         room?.players.find((p) => p.id === c.id),
         room?.players.length,
         room?.selected,
-        game ? { id: game.id, over: game.over, paused: game.paused, mine: game.players.includes(c.id), phoneView } : null,
+        game
+          ? {
+              id: game.id,
+              over: game.over,
+              paused: game.paused,
+              mine: game.players.includes(c.id),
+              phoneView,
+            }
+          : null,
         game?.over ? room?.result : null,
         c.slot?.view,
         c.hasPending(),
@@ -232,7 +257,8 @@ export class GameNight {
   /** What counts as a new screen (it animates in); re-renders of the same one stay put. */
   private scene(): string {
     const room = this.host?.publicRoom() ?? this.client?.room;
-    const view = room?.game?.view as { phase?: string; round?: number; index?: number; current?: number; matchupIndex?: number } | undefined;
+    const view = room?.game?.view as
+      { phase?: string; round?: number; index?: number; current?: number; matchupIndex?: number } | undefined;
     return JSON.stringify([
       this.view.name,
       room?.game?.id,
@@ -249,7 +275,9 @@ export class GameNight {
     if (!room) return;
     if (room.players.length > this.lastPlayers) play('join');
     this.lastPlayers = room.players.length;
-    const phase = room.game ? `${room.game.id}:${room.game.over}:${(room.game.view as { phase?: string }).phase}` : '';
+    const phase = room.game
+      ? `${room.game.id}:${room.game.over}:${(room.game.view as { phase?: string }).phase}`
+      : '';
     if (phase && phase !== this.lastPhase) {
       const p = (room.game!.view as { phase?: string }).phase ?? '';
       if (room.game!.over) play('win');
@@ -267,7 +295,12 @@ export class GameNight {
       case 'join':
         return this.joinForm(this.view.code);
       case 'busy':
-        return h('div', { class: 'gn-center' }, h('div', { class: 'gn-spinner' }), h('p', {}, this.view.text));
+        return h(
+          'div',
+          { class: 'gn-center' },
+          h('div', { class: 'gn-spinner' }),
+          h('p', {}, this.view.text),
+        );
       case 'tv':
         return this.tv();
       case 'phone':
@@ -288,12 +321,22 @@ export class GameNight {
     const phoneSized = matchMedia('(max-width: 700px)').matches;
     const hostBtn = h(
       'button',
-      { class: `gn-btn ${phoneSized ? '' : 'primary'} big`, type: 'button', 'data-testid': 'host', onclick: () => void this.hostRoom() },
+      {
+        class: `gn-btn ${phoneSized ? '' : 'primary'} big`,
+        type: 'button',
+        'data-testid': 'host',
+        onclick: () => void this.hostRoom(),
+      },
       '📺 Host on this screen',
     );
     const joinBtn = h(
       'button',
-      { class: `gn-btn ${phoneSized ? 'primary' : ''} big`, type: 'button', 'data-testid': 'join-start', onclick: () => this.go({ name: 'join', code: '' }) },
+      {
+        class: `gn-btn ${phoneSized ? 'primary' : ''} big`,
+        type: 'button',
+        'data-testid': 'join-start',
+        onclick: () => this.go({ name: 'join', code: '' }),
+      },
       '📱 Join on my phone',
     );
     return h(
@@ -304,10 +347,18 @@ export class GameNight {
         { class: 'gn-hero' },
         this.logo(),
         h('h1', { class: 'gn-hero-title' }, 'One screen. Everyone’s phones. Four party games.'),
-        h('p', { class: 'gn-lead' }, 'Open this on a laptop or TV to host. Friends join on their phones with the room code. No apps, no accounts.'),
+        h(
+          'p',
+          { class: 'gn-lead' },
+          'Open this on a laptop or TV to host. Friends join on their phones with the room code. No apps, no accounts.',
+        ),
         h('div', { class: 'gn-hero-actions' }, phoneSized ? [joinBtn, hostBtn] : [hostBtn, joinBtn]),
       ),
-      h('section', { class: 'gn-cards' }, GAME_IDS.map((id) => this.card(id))),
+      h(
+        'section',
+        { class: 'gn-cards' },
+        GAME_IDS.map((id) => this.card(id)),
+      ),
       h(
         'p',
         { class: 'gn-foot' },
@@ -353,7 +404,9 @@ export class GameNight {
         h('p', { class: 'gn-card-tag' }, g.tagline),
         h('p', { class: 'gn-card-blurb' }, g.blurb),
         h('p', { class: 'gn-card-meta' }, h('span', {}, g.players), h('span', {}, g.minutes)),
-        options.onClick ? h('span', { class: 'gn-card-cta' }, options.selected ? 'Selected ✓' : 'Select') : null,
+        options.onClick
+          ? h('span', { class: 'gn-card-cta' }, options.selected ? 'Selected ✓' : 'Select')
+          : null,
       ),
     );
   }
@@ -394,7 +447,11 @@ export class GameNight {
       h('h1', {}, 'Join the game'),
       h('label', { class: 'gn-field' }, h('span', {}, 'Room code'), codeInput),
       h('label', { class: 'gn-field' }, h('span', {}, 'Name'), nameInput),
-      h('button', { class: 'gn-btn primary big', type: 'button', onclick: submit, 'data-testid': 'join' }, 'Join'),
+      h(
+        'button',
+        { class: 'gn-btn primary big', type: 'button', onclick: submit, 'data-testid': 'join' },
+        'Join',
+      ),
       h('button', { class: 'gn-link', type: 'button', onclick: () => this.go({ name: 'home' }) }, '‹ Back'),
     );
   }
@@ -413,7 +470,13 @@ export class GameNight {
     const game = room.game;
     const muteBtn = h(
       'button',
-      { class: 'gn-icon-btn', type: 'button', title: isMuted() ? 'Sound off' : 'Sound on', 'aria-label': 'Toggle sound', onclick: () => (setMuted(!isMuted()), this.render(true)) },
+      {
+        class: 'gn-icon-btn',
+        type: 'button',
+        title: isMuted() ? 'Sound off' : 'Sound on',
+        'aria-label': 'Toggle sound',
+        onclick: () => (setMuted(!isMuted()), this.render(true)),
+      },
       isMuted() ? '🔇' : '🔊',
     );
     const controls = game
@@ -422,26 +485,66 @@ export class GameNight {
         : [
             h(
               'button',
-              { class: 'gn-btn small', type: 'button', 'data-testid': game.paused ? 'resume' : 'pause', onclick: () => host.dispatch({ type: game.paused ? 'resume' : 'pause' }) },
+              {
+                class: 'gn-btn small',
+                type: 'button',
+                'data-testid': game.paused ? 'resume' : 'pause',
+                onclick: () => host.dispatch({ type: game.paused ? 'resume' : 'pause' }),
+              },
               game.paused ? '▶ Resume' : '❚❚ Pause',
             ),
-            h('button', { class: 'gn-btn small', type: 'button', 'data-testid': 'skip', onclick: () => host.dispatch({ type: 'skip' }) }, 'Skip ⏭'),
             h(
               'button',
-              { class: 'gn-btn small', type: 'button', 'data-testid': 'end-game', onclick: () => confirm('End this game and go back to the lobby?') && host.dispatch({ type: 'lobby' }) },
+              {
+                class: 'gn-btn small',
+                type: 'button',
+                'data-testid': 'skip',
+                onclick: () => host.dispatch({ type: 'skip' }),
+              },
+              'Skip ⏭',
+            ),
+            h(
+              'button',
+              {
+                class: 'gn-btn small',
+                type: 'button',
+                'data-testid': 'end-game',
+                onclick: () =>
+                  confirm('End this game and go back to the lobby?') && host.dispatch({ type: 'lobby' }),
+              },
               'End game',
             ),
           ]
       : [
-          h('button', { class: 'gn-btn small', type: 'button', 'data-testid': 'packs', onclick: () => ((this.packsOpen = !this.packsOpen), this.render(true)) }, 'Content packs'),
-          h('button', { class: 'gn-btn small', type: 'button', onclick: () => this.closeRoom() }, 'Close room'),
+          h(
+            'button',
+            {
+              class: 'gn-btn small',
+              type: 'button',
+              'data-testid': 'packs',
+              onclick: () => ((this.packsOpen = !this.packsOpen), this.render(true)),
+            },
+            'Content packs',
+          ),
+          h(
+            'button',
+            { class: 'gn-btn small', type: 'button', onclick: () => this.closeRoom() },
+            'Close room',
+          ),
         ];
     return h(
       'header',
       { class: 'gn-bar' },
       this.logo(true),
       game ? h('span', { class: `gn-bar-game game-${game.id}` }, GAMES[game.id].title) : null,
-      h('span', { class: 'gn-bar-code' }, 'Join at ', h('b', {}, location.host), ' · code ', h('b', { 'data-testid': 'bar-code' }, room.code)),
+      h(
+        'span',
+        { class: 'gn-bar-code' },
+        'Join at ',
+        h('b', {}, location.host),
+        ' · code ',
+        h('b', { 'data-testid': 'bar-code' }, room.code),
+      ),
       h('div', { class: 'gn-bar-actions' }, controls, muteBtn),
     );
   }
@@ -461,7 +564,13 @@ export class GameNight {
         game.paused ? h('div', { class: 'gn-paused', 'data-testid': 'paused' }, h('h1', {}, 'Paused')) : null,
       );
     }
-    return h('div', { class: 'gn-tv-frame' }, this.tvBar(room), body, this.packsOpen && !game ? this.packsPanel() : null);
+    return h(
+      'div',
+      { class: 'gn-tv-frame' },
+      this.tvBar(room),
+      body,
+      this.packsOpen && !game ? this.packsPanel() : null,
+    );
   }
 
   private lobby(room: PublicRoom): HTMLElement {
@@ -472,17 +581,33 @@ export class GameNight {
     const enough = room.players.length >= module.minPlayers;
     const settings = settingsFor(host.room, module);
     const library = this.library!;
-    const kinds: Partial<Record<GameId, 'quip' | 'bluff' | 'sketch'>> = { quip: 'quip', bluff: 'bluff', sketch: 'sketch' };
+    const kinds: Partial<Record<GameId, 'quip' | 'bluff' | 'sketch'>> = {
+      quip: 'quip',
+      bluff: 'bluff',
+      sketch: 'sketch',
+    };
     const kind = kinds[selected];
     const settingRows = module.settings.map((def) => {
       const options =
         def.key === 'category' && kind
-          ? [{ value: 'any', label: 'Everything' }, ...categories(library, kind).map((c) => ({ value: c, label: c[0]!.toUpperCase() + c.slice(1) }))]
+          ? [
+              { value: 'any', label: 'Everything' },
+              ...categories(library, kind).map((c) => ({
+                value: c,
+                label: c[0]!.toUpperCase() + c.slice(1),
+              })),
+            ]
           : def.options;
       const select = h(
         'select',
         { class: 'gn-select', 'data-testid': `setting-${def.key}` },
-        options.map((o) => h('option', { value: String(o.value), selected: String(settings[def.key]) === String(o.value) }, o.label)),
+        options.map((o) =>
+          h(
+            'option',
+            { value: String(o.value), selected: String(settings[def.key]) === String(o.value) },
+            o.label,
+          ),
+        ),
       );
       select.addEventListener('change', () => {
         const option = options.find((o) => String(o.value) === select.value);
@@ -512,7 +637,9 @@ export class GameNight {
                   { class: `gn-player${p.online ? '' : ' away'}`, style: `--pc:${colorOf(p)}` },
                   avatar(p),
                   h('span', { class: 'gn-player-name' }, p.name),
-                  wins[p.id] ? h('span', { class: 'gn-trophy', title: 'Games won tonight' }, `🏆 ${wins[p.id]}`) : null,
+                  wins[p.id]
+                    ? h('span', { class: 'gn-trophy', title: 'Games won tonight' }, `🏆 ${wins[p.id]}`)
+                    : null,
                   h(
                     'button',
                     {
@@ -520,7 +647,9 @@ export class GameNight {
                       type: 'button',
                       title: `Remove ${p.name}`,
                       'aria-label': `Remove ${p.name}`,
-                      onclick: () => confirm(`Remove ${p.name} from the room?`) && host.dispatch({ type: 'kick', id: p.id }),
+                      onclick: () =>
+                        confirm(`Remove ${p.name} from the room?`) &&
+                        host.dispatch({ type: 'kick', id: p.id }),
                     },
                     '✕',
                   ),
@@ -533,7 +662,16 @@ export class GameNight {
         'section',
         { class: 'gn-pick' },
         h('h1', { class: 'gn-section-title' }, 'Pick a game'),
-        h('div', { class: 'gn-cards compact' }, GAME_IDS.map((id) => this.card(id, { selected: id === selected, onClick: () => host.dispatch({ type: 'select', game: id }) }))),
+        h(
+          'div',
+          { class: 'gn-cards compact' },
+          GAME_IDS.map((id) =>
+            this.card(id, {
+              selected: id === selected,
+              onClick: () => host.dispatch({ type: 'select', game: id }),
+            }),
+          ),
+        ),
         h(
           'div',
           { class: `gn-launch game-${selected}` },
@@ -563,11 +701,20 @@ export class GameNight {
     const players = playerMap(room);
     if (!result) return h('div', {});
     const winners = result.winners.map((id) => players.get(id)).filter(Boolean);
-    const title = winners.length === 0 ? 'Nobody scored!' : winners.length === 1 ? `${winners[0]!.name} wins!` : `It’s a tie!`;
+    const title =
+      winners.length === 0
+        ? 'Nobody scored!'
+        : winners.length === 1
+          ? `${winners[0]!.name} wins!`
+          : `It’s a tie!`;
     return h(
       'section',
       { class: `gn-results game-${result.game}` },
-      h('div', { class: 'gn-confetti', 'aria-hidden': 'true' }, Array.from({ length: 24 }, (_, i) => h('i', { style: `--i:${i}` }))),
+      h(
+        'div',
+        { class: 'gn-confetti', 'aria-hidden': 'true' },
+        Array.from({ length: 24 }, (_, i) => h('i', { style: `--i:${i}` })),
+      ),
       h('p', { class: 'gn-kicker' }, `${GAMES[result.game].title} · final results`),
       h('h1', { class: 'gn-huge', 'data-testid': 'winner' }, title),
       winners.length > 1 ? h('p', { class: 'gn-lead' }, winners.map((w) => w!.name).join(' & ')) : null,
@@ -589,15 +736,37 @@ export class GameNight {
       h(
         'div',
         { class: 'gn-results-actions' },
-        h('button', { class: 'gn-btn primary big', type: 'button', 'data-testid': 'play-again', onclick: () => host.dispatch({ type: 'restart' }) }, 'Play again'),
-        h('button', { class: 'gn-btn big', type: 'button', 'data-testid': 'to-lobby', onclick: () => host.dispatch({ type: 'lobby' }) }, 'Back to Game Night'),
+        h(
+          'button',
+          {
+            class: 'gn-btn primary big',
+            type: 'button',
+            'data-testid': 'play-again',
+            onclick: () => host.dispatch({ type: 'restart' }),
+          },
+          'Play again',
+        ),
+        h(
+          'button',
+          {
+            class: 'gn-btn big',
+            type: 'button',
+            'data-testid': 'to-lobby',
+            onclick: () => host.dispatch({ type: 'lobby' }),
+          },
+          'Back to Game Night',
+        ),
       ),
     );
   }
 
   private packsPanel(): HTMLElement {
     const packs = customPacks(safeStorage);
-    const file = h('input', { type: 'file', accept: '.json,.csv,application/json,text/csv', 'data-testid': 'pack-file' });
+    const file = h('input', {
+      type: 'file',
+      accept: '.json,.csv,application/json,text/csv',
+      'data-testid': 'pack-file',
+    });
     file.addEventListener('change', async () => {
       const f = file.files?.[0];
       if (!f) return;
@@ -638,7 +807,10 @@ export class GameNight {
                 class: 'gn-link',
                 type: 'button',
                 onclick: async () => {
-                  saveCustomPacks(safeStorage, packs.filter((x) => x.id !== p.id));
+                  saveCustomPacks(
+                    safeStorage,
+                    packs.filter((x) => x.id !== p.id),
+                  );
                   await this.reloadLibrary();
                 },
               },
@@ -648,7 +820,15 @@ export class GameNight {
         ),
       ),
       h('label', { class: 'gn-btn' }, 'Load a pack file…', file),
-      h('button', { class: 'gn-btn primary', type: 'button', onclick: () => ((this.packsOpen = false), this.render(true)) }, 'Done'),
+      h(
+        'button',
+        {
+          class: 'gn-btn primary',
+          type: 'button',
+          onclick: () => ((this.packsOpen = false), this.render(true)),
+        },
+        'Done',
+      ),
     );
   }
 
@@ -664,21 +844,33 @@ export class GameNight {
     const c = this.client!;
     const room = c.room;
     const me = room?.players.find((p) => p.id === c.id);
-    const banner = c.connected() ? null : h('div', { class: 'gn-offline', 'data-testid': 'offline' }, 'Reconnecting to the TV…');
+    const banner = c.connected()
+      ? null
+      : h('div', { class: 'gn-offline', 'data-testid': 'offline' }, 'Reconnecting to the TV…');
     let body: HTMLElement;
     if (c.status === 'kicked') {
       body = phoneNote('🚪', 'You were removed from this room', null, 'kicked');
     } else if (c.status === 'full') {
       body = phoneNote('🙈', 'This room is full', 'Ten players is the limit.');
     } else if (!room || !me) {
-      body = phoneNote('📡', `Joining room ${c.code}…`, room ? 'Almost there.' : 'Looking for the TV. Is the room code right?', 'joining');
+      body = phoneNote(
+        '📡',
+        `Joining room ${c.code}…`,
+        room ? 'Almost there.' : 'Looking for the TV. Is the room code right?',
+        'joining',
+      );
     } else if (!room.game) {
       body = this.phoneLobby(room, me.id);
     } else if (room.game.over) {
       const row = room.result?.standings.find((r) => r.id === me.id);
       const won = room.result?.winners.includes(me.id);
       if (won) buzz(200);
-      body = phoneNote(won ? '🏆' : '🎉', won ? 'You won!' : row ? `You came #${row.rank}` : 'Game over', row ? `${row.score.toLocaleString()} points` : 'Look at the TV', 'phone-result');
+      body = phoneNote(
+        won ? '🏆' : '🎉',
+        won ? 'You won!' : row ? `You came #${row.rank}` : 'Game over',
+        row ? `${row.score.toLocaleString()} points` : 'Look at the TV',
+        'phone-result',
+      );
     } else if (!room.game.players.includes(me.id)) {
       body = phoneNote('⏭️', 'Game in progress', 'You’ll be in the next one. Watch the TV!', 'spectating');
     } else {
@@ -703,7 +895,10 @@ export class GameNight {
         { class: 'gn-phone-bar' },
         me ? h('span', { class: 'gn-me' }, avatar(me, 'sm'), nameTag(me)) : this.logo(true),
         room?.game ? h('span', { class: 'gn-bar-game' }, GAMES[room.game.id].title) : null,
-        h('span', { class: `gn-dot${c.connected() ? ' on' : ''}`, title: c.connected() ? 'Connected' : 'Reconnecting' }),
+        h('span', {
+          class: `gn-dot${c.connected() ? ' on' : ''}`,
+          title: c.connected() ? 'Connected' : 'Reconnecting',
+        }),
       ),
       h('div', { class: 'gn-phone-body' }, body),
     );
@@ -728,9 +923,19 @@ export class GameNight {
       { class: 'gn-phone-stack center', 'data-testid': 'phone-lobby' },
       h('div', { class: 'gn-me-big', style: `--pc:${colorOf(player)}` }, avatar(player, 'lg')),
       h('h2', {}, 'You’re in!'),
-      h('p', { class: 'gn-hint' }, `${room.players.length} player${room.players.length === 1 ? '' : 's'} here. The host is picking a game: `, h('b', {}, GAMES[room.selected].title), '.'),
+      h(
+        'p',
+        { class: 'gn-hint' },
+        `${room.players.length} player${room.players.length === 1 ? '' : 's'} here. The host is picking a game: `,
+        h('b', {}, GAMES[room.selected].title),
+        '.',
+      ),
       h('div', { class: 'gn-answer-row' }, input, save),
-      h('button', { class: 'gn-link', type: 'button', onclick: () => confirm('Leave this room?') && this.leaveRoom() }, 'Leave room'),
+      h(
+        'button',
+        { class: 'gn-link', type: 'button', onclick: () => confirm('Leave this room?') && this.leaveRoom() },
+        'Leave room',
+      ),
     );
   }
 }

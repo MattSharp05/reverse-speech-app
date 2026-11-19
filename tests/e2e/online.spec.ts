@@ -10,7 +10,7 @@ test('two phones play a game online', async ({ context }) => {
   const host = await context.newPage();
   const guest = await context.newPage();
 
-  await host.goto('/?net=local');
+  await host.goto('/?mode=classic&net=local');
   await host.getByRole('button', { name: /Two phones/ }).click();
   await host.getByTestId('online-name').fill('Hana');
   await host.getByTestId('create').click();
@@ -60,7 +60,7 @@ test('two phones play a game online', async ({ context }) => {
 test('the guest hears the host’s copy of the word', async ({ context }) => {
   const host = await context.newPage();
   const guest = await context.newPage();
-  await host.goto('/?net=local');
+  await host.goto('/?mode=classic&net=local');
   await host.getByRole('button', { name: /Two phones/ }).click();
   await host.getByTestId('online-name').fill('Hana');
   await host.getByTestId('create').click();

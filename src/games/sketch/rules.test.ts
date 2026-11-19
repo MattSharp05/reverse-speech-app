@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { players, testCtx } from '../../test/fixtures';
-import { ARTIST_POINTS, FOOL_POINTS, MAX_STROKES, sketchIt, TRUTH_POINTS, validDrawing, type SketchState } from './rules';
+import {
+  ARTIST_POINTS,
+  FOOL_POINTS,
+  MAX_STROKES,
+  sketchIt,
+  TRUTH_POINTS,
+  validDrawing,
+  type SketchState,
+} from './rules';
 
 const line = [{ c: 0, s: 1, p: [10, 10, 200, 300] }];
 
@@ -60,7 +68,9 @@ describe('sketch it', () => {
     const truth = s.sketches[s.order[0]!]!.prompt.text;
     expect(sketchIt.act(s, artist, { type: 'caption', text: 'mine' }, ctx)).toBe(s);
     const other = s.players.find((p) => p.id !== artist)!.id;
-    expect(sketchIt.act(s, other, { type: 'caption', text: truth.toLowerCase() }, ctx).rejected[other]).toBe('truth');
+    expect(sketchIt.act(s, other, { type: 'caption', text: truth.toLowerCase() }, ctx).rejected[other]).toBe(
+      'truth',
+    );
   });
 
   it('scores guessers, the artist and fooling captions', () => {

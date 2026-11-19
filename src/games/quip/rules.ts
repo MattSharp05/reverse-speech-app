@@ -1,5 +1,14 @@
 import { categoryOk, deal, maturityOk } from '../../content/deal';
-import { asInt, asRecord, secs, type Ctx, type GameModule, type Player, type PlayerId, type Timed } from '../../platform/module';
+import {
+  asInt,
+  asRecord,
+  secs,
+  type Ctx,
+  type GameModule,
+  type Player,
+  type PlayerId,
+  type Timed,
+} from '../../platform/module';
 import { shuffle } from '../../platform/rng';
 import { addPoints } from '../../platform/scores';
 import { cleanText } from '../../platform/text';
@@ -229,7 +238,10 @@ export const quip: GameModule<QuipState, QuipSettings> = {
     const filter = (p: { maturity: 'family' | 'adult'; category: string }) =>
       maturityOk(settings.maturity, p) && categoryOk(settings.category, p);
     let dealt = deal(ctx.content.quip, need, ctx.rng, ctx.content.recent, filter);
-    if (dealt.length < need) dealt = deal(ctx.content.quip, need, ctx.rng, ctx.content.recent, (p) => maturityOk(settings.maturity, p));
+    if (dealt.length < need)
+      dealt = deal(ctx.content.quip, need, ctx.rng, ctx.content.recent, (p) =>
+        maturityOk(settings.maturity, p),
+      );
     const s: QuipState = {
       phase: 'intro',
       deadline: null,
@@ -265,7 +277,8 @@ export const quip: GameModule<QuipState, QuipSettings> = {
       if (!eligibleVoters(s, m).includes(from) || m.votes[from] !== undefined) return s;
       const raw2 = Array.isArray(action.choices) ? action.choices : [action.choice];
       const choices = [...new Set(raw2.map(asInt))].filter(
-        (c): c is number => c !== null && m.answers[c] !== null && m.answers[c] !== undefined && m.authors[c] !== from,
+        (c): c is number =>
+          c !== null && m.answers[c] !== null && m.answers[c] !== undefined && m.authors[c] !== from,
       );
       const max = isFinal(s) ? FINAL_VOTES : 1;
       if (choices.length === 0 || choices.length > max || choices.length !== raw2.length) return s;
@@ -283,7 +296,9 @@ export const quip: GameModule<QuipState, QuipSettings> = {
     const showAuthors = s.phase === 'result';
     const waiting =
       s.phase === 'answer'
-        ? s.players.filter((p) => s.matchups.some((x) => x.answers[x.authors.indexOf(p.id)] === null)).map((p) => p.id)
+        ? s.players
+            .filter((p) => s.matchups.some((x) => x.answers[x.authors.indexOf(p.id)] === null))
+            .map((p) => p.id)
         : s.phase === 'vote' && m
           ? eligibleVoters(s, m).filter((id) => m.votes[id] === undefined)
           : [];
@@ -301,7 +316,11 @@ export const quip: GameModule<QuipState, QuipSettings> = {
           ? m?.answers.map((text, i) => ({
               text,
               author: showAuthors ? m.authors[i] : null,
-              votes: showAuthors ? Object.entries(m.votes).filter(([, c]) => c.includes(i)).map(([v]) => v) : null,
+              votes: showAuthors
+                ? Object.entries(m.votes)
+                    .filter(([, c]) => c.includes(i))
+                    .map(([v]) => v)
+                : null,
               points: showAuthors ? (m.points[m.authors[i]!] ?? 0) : null,
             }))
           : null,
@@ -319,7 +338,12 @@ export const quip: GameModule<QuipState, QuipSettings> = {
       prompts:
         s.phase === 'answer' || s.phase === 'intro'
           ? s.matchups
-              .map((x, index) => ({ index, text: x.prompt.text, answer: x.answers[x.authors.indexOf(id)] ?? null, mine: x.authors.includes(id) }))
+              .map((x, index) => ({
+                index,
+                text: x.prompt.text,
+                answer: x.answers[x.authors.indexOf(id)] ?? null,
+                mine: x.authors.includes(id),
+              }))
               .filter((x) => x.mine)
               .map(({ index, text, answer }) => ({ index, text, answer }))
           : [],

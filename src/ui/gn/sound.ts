@@ -33,7 +33,13 @@ export function unlockSound(): void {
   }
 }
 
-function tone(freq: number, at: number, length: number, type: OscillatorType = 'triangle', gain = 0.12): void {
+function tone(
+  freq: number,
+  at: number,
+  length: number,
+  type: OscillatorType = 'triangle',
+  gain = 0.12,
+): void {
   if (!ctx) return;
   const osc = ctx.createOscillator();
   const amp = ctx.createGain();

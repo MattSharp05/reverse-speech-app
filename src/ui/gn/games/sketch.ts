@@ -48,7 +48,12 @@ function tv({ room, view: v, players, paused }: TvCtx<View>): HTMLElement {
       return h(
         'section',
         { class: 'gn-stage' },
-        tvHead(v.rounds > 1 ? `Round ${v.round + 1} of ${v.rounds}` : 'Sketch It', 'Draw your secret prompt on your phone!', v.deadline, paused),
+        tvHead(
+          v.rounds > 1 ? `Round ${v.round + 1} of ${v.rounds}` : 'Sketch It',
+          'Draw your secret prompt on your phone!',
+          v.deadline,
+          paused,
+        ),
         h('div', { class: 'gn-big-icon', 'aria-hidden': 'true' }, '🖍️'),
         h('p', { class: 'gn-lead' }, 'Nobody else knows what you’re drawing. Keep it that way.'),
         waitingRow(room, v.waiting, 'Still drawing:'),
@@ -62,7 +67,12 @@ function tv({ room, view: v, players, paused }: TvCtx<View>): HTMLElement {
           'div',
           { class: 'gn-sketch-row' },
           drawingView(v.drawing),
-          h('div', { class: 'gn-sketch-side' }, h('p', { class: 'gn-lead' }, 'Write a fake title on your phone. Make it believable!'), waitingRow(room, v.waiting, 'Still writing:')),
+          h(
+            'div',
+            { class: 'gn-sketch-side' },
+            h('p', { class: 'gn-lead' }, 'Write a fake title on your phone. Make it believable!'),
+            waitingRow(room, v.waiting, 'Still writing:'),
+          ),
         ),
       );
     case 'vote':
@@ -71,7 +81,12 @@ function tv({ room, view: v, players, paused }: TvCtx<View>): HTMLElement {
       return h(
         'section',
         { class: `gn-stage ${reveal ? 'reveal' : ''}` },
-        tvHead(kicker, reveal ? h('span', {}, nameTag(artist), ' drew…') : 'Which is the real title?', reveal ? null : v.deadline, paused),
+        tvHead(
+          kicker,
+          reveal ? h('span', {}, nameTag(artist), ' drew…') : 'Which is the real title?',
+          reveal ? null : v.deadline,
+          paused,
+        ),
         h(
           'div',
           { class: 'gn-sketch-row' },
@@ -82,14 +97,27 @@ function tv({ room, view: v, players, paused }: TvCtx<View>): HTMLElement {
             (v.options ?? []).map((o, i) =>
               h(
                 'article',
-                { class: `gn-option${reveal && o.truth ? ' truth' : ''}${reveal && !o.truth ? ' lie' : ''}`, style: `--i:${i}`, 'data-testid': 'option' },
+                {
+                  class: `gn-option${reveal && o.truth ? ' truth' : ''}${reveal && !o.truth ? ' lie' : ''}`,
+                  style: `--i:${i}`,
+                  'data-testid': 'option',
+                },
                 h('p', {}, o.text),
                 reveal &&
                   h(
                     'footer',
                     {},
-                    h('span', { class: 'gn-option-tag' }, o.truth ? 'THE REAL TITLE' : o.house ? 'House decoy' : 'By', ...(o.authors ?? []).map((id) => nameTag(players.get(id)))),
-                    h('span', { class: 'gn-votes' }, (o.votedBy ?? []).map((id) => avatar(players.get(id), 'sm'))),
+                    h(
+                      'span',
+                      { class: 'gn-option-tag' },
+                      o.truth ? 'THE REAL TITLE' : o.house ? 'House decoy' : 'By',
+                      ...(o.authors ?? []).map((id) => nameTag(players.get(id))),
+                    ),
+                    h(
+                      'span',
+                      { class: 'gn-votes' },
+                      (o.votedBy ?? []).map((id) => avatar(players.get(id), 'sm')),
+                    ),
                   ),
               ),
             ),
@@ -100,7 +128,12 @@ function tv({ room, view: v, players, paused }: TvCtx<View>): HTMLElement {
     }
     case 'scores':
     case 'done':
-      return h('section', { class: 'gn-stage' }, tvHead('Sketch It', 'Scores', null, paused), scoreList(room, v.scores, v.gained));
+      return h(
+        'section',
+        { class: 'gn-stage' },
+        tvHead('Sketch It', 'Scores', null, paused),
+        scoreList(room, v.scores, v.gained),
+      );
   }
 }
 
@@ -118,7 +151,8 @@ function phone({ view: v, priv, send, paused, sending }: PhoneCtx<View, Priv>): 
         drawPad(`sketch-${v.round}`, (drawing) => send({ type: 'draw', drawing }), sending),
       );
     case 'caption': {
-      if (priv.artist) return phoneNote('🖼️', 'That’s your drawing!', 'Everyone’s writing fake titles for it.');
+      if (priv.artist)
+        return phoneNote('🖼️', 'That’s your drawing!', 'Everyone’s writing fake titles for it.');
       if (priv.caption) return phoneNote('✅', 'Title sent', `“${priv.caption}”`, 'captioned');
       const key = `caption-${v.round}-${v.index}`;
       return h(
@@ -126,7 +160,13 @@ function phone({ view: v, priv, send, paused, sending }: PhoneCtx<View, Priv>): 
         { class: 'gn-phone-stack' },
         phoneHead('Write a fake title', v.deadline, paused),
         h('p', { class: 'gn-hint' }, 'Look at the drawing on the TV. What could it be?'),
-        priv.rejected === 'truth' ? h('p', { class: 'gn-alert', 'data-testid': 'rejected' }, 'You guessed the real one! Write a fake instead.') : null,
+        priv.rejected === 'truth'
+          ? h(
+              'p',
+              { class: 'gn-alert', 'data-testid': 'rejected' },
+              'You guessed the real one! Write a fake instead.',
+            )
+          : null,
         answerBox({
           input: draftInput(key, {}),
           draft: key,

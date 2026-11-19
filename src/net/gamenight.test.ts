@@ -16,7 +16,8 @@ class Hub {
       send: (message) => {
         if (!member.up) return;
         this.sent.push(message);
-        for (const other of this.members) if (other !== member && other.up) other.handler(structuredClone(message));
+        for (const other of this.members)
+          if (other !== member && other.up) other.handler(structuredClone(message));
       },
       onMessage: (handler) => (member.handler = handler),
       close: () => (member.up = false),
@@ -45,7 +46,13 @@ async function party(names: string[]) {
   vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'Date'] });
   const hub = new Hub();
   const ctx = testCtx(2);
-  const host = await HostRoom.open({ code: 'WXYZ', channel: hub.channel(), content: ctx.content, rng: ctx.rng, storage: new MemoryStorage() });
+  const host = await HostRoom.open({
+    code: 'WXYZ',
+    channel: hub.channel(),
+    content: ctx.content,
+    rng: ctx.rng,
+    storage: new MemoryStorage(),
+  });
   const phones: PlayerClient[] = [];
   const storages: MemoryStorage[] = [];
   for (const name of names) {
@@ -103,7 +110,11 @@ describe('Game Night networking', () => {
     const victim = phones[0]!.id;
     const fake = hub.channel();
     fake.send({ t: 'hello', from: victim, pub: null, name: 'Mallory' });
-    fake.send({ t: 'act', from: victim, box: { plain: { id: 'x', action: { type: 'play', action: { type: 'lie', text: 'evil' } } } } });
+    fake.send({
+      t: 'act',
+      from: victim,
+      box: { plain: { id: 'x', action: { type: 'play', action: { type: 'lie', text: 'evil' } } } },
+    });
     fake.send({ t: 'act', from: victim, box: { iv: 'AAAAAAAAAAAAAAAA', ct: 'AAAA' } });
     await settle();
     const state = host.room.game!.state as unknown as { lies: Record<string, string> };
@@ -115,7 +126,12 @@ describe('Game Night networking', () => {
     const { hub, host, phones, storages } = await party(['Ann', 'Bo']);
     const id = phones[0]!.id;
     phones[0]!.close();
-    const again = await PlayerClient.open({ code: 'WXYZ', name: 'Ann', channel: hub.channel(), storage: storages[0]! });
+    const again = await PlayerClient.open({
+      code: 'WXYZ',
+      name: 'Ann',
+      channel: hub.channel(),
+      storage: storages[0]!,
+    });
     await settle();
     expect(again.id).toBe(id);
     expect(again.status).toBe('joined');
@@ -145,8 +161,18 @@ describe('Game Night networking', () => {
     const ctx = testCtx(2);
     const open = () => HostRoom.open({ code: 'WXYZ', channel: hub.channel(), content: ctx.content, storage });
     const host = await open();
-    const phone = await PlayerClient.open({ code: 'WXYZ', name: 'Ann', channel: hub.channel(), storage: new MemoryStorage() });
-    await PlayerClient.open({ code: 'WXYZ', name: 'Bo', channel: hub.channel(), storage: new MemoryStorage() });
+    const phone = await PlayerClient.open({
+      code: 'WXYZ',
+      name: 'Ann',
+      channel: hub.channel(),
+      storage: new MemoryStorage(),
+    });
+    await PlayerClient.open({
+      code: 'WXYZ',
+      name: 'Bo',
+      channel: hub.channel(),
+      storage: new MemoryStorage(),
+    });
     await settle();
     host.close();
     const again = await open();

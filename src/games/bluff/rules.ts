@@ -1,6 +1,15 @@
 import { categoryOk, deal } from '../../content/deal';
 import type { BluffQuestion } from '../../content/schema';
-import { asInt, asRecord, secs, type Ctx, type GameModule, type Player, type PlayerId, type Timed } from '../../platform/module';
+import {
+  asInt,
+  asRecord,
+  secs,
+  type Ctx,
+  type GameModule,
+  type Player,
+  type PlayerId,
+  type Timed,
+} from '../../platform/module';
 import { shuffle } from '../../platform/rng';
 import { addPoints } from '../../platform/scores';
 import { cleanText, sameAnswer } from '../../platform/text';
@@ -115,7 +124,12 @@ function reveal(s: BluffState, ctx: Ctx): BluffState {
 function next(s: BluffState, ctx: Ctx): BluffState {
   switch (s.phase) {
     case 'lie':
-      return { ...s, phase: 'pick', options: buildOptions(s, ctx), deadline: ctx.now + secs(s.settings.pickSecs) };
+      return {
+        ...s,
+        phase: 'pick',
+        options: buildOptions(s, ctx),
+        deadline: ctx.now + secs(s.settings.pickSecs),
+      };
     case 'pick':
       return reveal(s, ctx);
     case 'reveal':
@@ -133,8 +147,16 @@ export const bluff: GameModule<BluffState, BluffSettings> = {
   minPlayers: 2,
   maxPlayers: 10,
   settings: [
-    { key: 'questions', label: 'Questions', options: [4, 6, 8, 10].map((n) => ({ value: n, label: String(n) })) },
-    { key: 'lieSecs', label: 'Lie time', options: [30, 45, 60, 90].map((n) => ({ value: n, label: `${n}s` })) },
+    {
+      key: 'questions',
+      label: 'Questions',
+      options: [4, 6, 8, 10].map((n) => ({ value: n, label: String(n) })),
+    },
+    {
+      key: 'lieSecs',
+      label: 'Lie time',
+      options: [30, 45, 60, 90].map((n) => ({ value: n, label: `${n}s` })),
+    },
     { key: 'pickSecs', label: 'Pick time', options: [15, 20, 30].map((n) => ({ value: n, label: `${n}s` })) },
     { key: 'category', label: 'Category', options: [{ value: 'any', label: 'Everything' }] },
     {
@@ -153,7 +175,8 @@ export const bluff: GameModule<BluffState, BluffSettings> = {
   init(players, settings, ctx) {
     const count = Math.max(1, Math.min(12, Number(settings.questions) || 6));
     const filter = (q: BluffQuestion) =>
-      categoryOk(settings.category, q) && (settings.difficulty === 'any' || q.difficulty === settings.difficulty);
+      categoryOk(settings.category, q) &&
+      (settings.difficulty === 'any' || q.difficulty === settings.difficulty);
     let questions = deal(ctx.content.bluff, count, ctx.rng, ctx.content.recent, filter);
     if (questions.length < count) questions = deal(ctx.content.bluff, count, ctx.rng, ctx.content.recent);
     if (!questions.length) {
@@ -232,7 +255,11 @@ export const bluff: GameModule<BluffState, BluffSettings> = {
               truth: revealed ? o.truth : null,
               authors: revealed ? o.authors : null,
               house: revealed ? o.house : null,
-              pickedBy: revealed ? Object.entries(s.picks).filter(([, p]) => p === i).map(([id]) => id) : null,
+              pickedBy: revealed
+                ? Object.entries(s.picks)
+                    .filter(([, p]) => p === i)
+                    .map(([id]) => id)
+                : null,
             }))
           : null,
       answer: revealed ? q.answer : null,

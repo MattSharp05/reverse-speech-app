@@ -23,7 +23,14 @@ body.gn {
   background: var(--bg);
   color: var(--ink);
   color-scheme: dark;
-  font-family: 'Bricolage Grotesque', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family:
+    'Bricolage Grotesque',
+    'Inter',
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
   font-size: 17px;
   line-height: 1.35;
   margin: 0;
@@ -41,10 +48,22 @@ body.gn #app {
   min-height: 100dvh;
 }
 
-.game-reverse { --a: var(--reverse); --a2: var(--reverse-2); }
-.game-quip { --a: var(--quip); --a2: var(--quip-2); }
-.game-bluff { --a: var(--bluff); --a2: var(--bluff-2); }
-.game-sketch { --a: var(--sketch); --a2: var(--sketch-2); }
+.game-reverse {
+  --a: var(--reverse);
+  --a2: var(--reverse-2);
+}
+.game-quip {
+  --a: var(--quip);
+  --a2: var(--quip-2);
+}
+.game-bluff {
+  --a: var(--bluff);
+  --a2: var(--bluff-2);
+}
+.game-sketch {
+  --a: var(--sketch);
+  --a2: var(--sketch-2);
+}
 
 .gn h1,
 .gn h2,
@@ -74,7 +93,11 @@ body.gn #app {
   align-items: center;
   justify-content: center;
   gap: 0.4em;
-  transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease, opacity 0.15s;
+  transition:
+    transform 0.12s ease,
+    background 0.15s ease,
+    border-color 0.15s ease,
+    opacity 0.15s;
   -webkit-tap-highlight-color: transparent;
   min-height: 48px;
 }
@@ -218,10 +241,18 @@ body.gn #app {
   border-radius: 4px;
 }
 
-.gn-logo-mark i:nth-child(1) { background: var(--reverse); }
-.gn-logo-mark i:nth-child(2) { background: var(--quip); }
-.gn-logo-mark i:nth-child(3) { background: var(--bluff); }
-.gn-logo-mark i:nth-child(4) { background: var(--sketch); }
+.gn-logo-mark i:nth-child(1) {
+  background: var(--reverse);
+}
+.gn-logo-mark i:nth-child(2) {
+  background: var(--quip);
+}
+.gn-logo-mark i:nth-child(3) {
+  background: var(--bluff);
+}
+.gn-logo-mark i:nth-child(4) {
+  background: var(--sketch);
+}
 
 /* ---------- Home ---------- */
 
@@ -284,7 +315,10 @@ body.gn #app {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .gn-card.clickable {
@@ -298,11 +332,17 @@ body.gn #app {
 
 .gn-card.selected {
   border-color: var(--a);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--a) 25%, transparent), 0 18px 40px -20px var(--a);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--a) 25%, transparent),
+    0 18px 40px -20px var(--a);
 }
 
 .gn-card-art {
-  background: radial-gradient(120% 120% at 20% 0%, color-mix(in srgb, var(--a) 28%, var(--surface)) 0%, var(--surface) 70%);
+  background: radial-gradient(
+    120% 120% at 20% 0%,
+    color-mix(in srgb, var(--a) 28%, var(--surface)) 0%,
+    var(--surface) 70%
+  );
   aspect-ratio: 5 / 3;
   display: grid;
   place-items: center;
@@ -383,11 +423,19 @@ body.gn #app {
   font-weight: 800;
   font-size: 1em;
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--pc) 25%, transparent);
-  transition: opacity 0.3s, filter 0.3s;
+  transition:
+    opacity 0.3s,
+    filter 0.3s;
 }
 
-.gn-avatar.sm { --size: 1.8em; font-size: 0.85em; }
-.gn-avatar.lg { --size: 5em; font-size: 2em; }
+.gn-avatar.sm {
+  --size: 1.8em;
+  font-size: 0.85em;
+}
+.gn-avatar.lg {
+  --size: 5em;
+  font-size: 2em;
+}
 
 .gn-avatar.away {
   opacity: 0.4;
@@ -892,7 +940,9 @@ body.gn #app {
   gap: 0.6em;
   animation: gn-slide 0.45s ease both;
   animation-delay: calc(var(--i) * 0.07s);
-  transition: opacity 0.4s, border-color 0.4s;
+  transition:
+    opacity 0.4s,
+    border-color 0.4s;
 }
 
 .gn-option p {
@@ -1029,8 +1079,12 @@ body.gn #app {
   gap: 0.3em;
 }
 
-.gn-attempt.right .gn-verdict { color: var(--good); }
-.gn-attempt.wrong .gn-verdict { color: var(--bad); }
+.gn-attempt.right .gn-verdict {
+  color: var(--good);
+}
+.gn-attempt.wrong .gn-verdict {
+  color: var(--bad);
+}
 
 .gn-muted {
   color: var(--muted);
@@ -1178,9 +1232,15 @@ body.gn #app {
   animation: gn-fall 3.2s ease-in calc(var(--i) * -0.13s) 2 both;
 }
 
-.gn-confetti i:nth-child(3n) { background: var(--a2); }
-.gn-confetti i:nth-child(4n) { background: var(--bluff); }
-.gn-confetti i:nth-child(5n) { background: var(--reverse); }
+.gn-confetti i:nth-child(3n) {
+  background: var(--a2);
+}
+.gn-confetti i:nth-child(4n) {
+  background: var(--bluff);
+}
+.gn-confetti i:nth-child(5n) {
+  background: var(--reverse);
+}
 
 .gn-paused {
   position: absolute;
@@ -1383,7 +1443,10 @@ body.gn #app {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  transition: transform 0.1s, border-color 0.15s, background 0.15s;
+  transition:
+    transform 0.1s,
+    border-color 0.15s,
+    background 0.15s;
 }
 
 .gn-choice:active:not(:disabled) {
@@ -1612,36 +1675,57 @@ body.gn #app {
 /* ---------- Motion ---------- */
 
 @keyframes gn-enter {
-  from { opacity: 0; transform: translateY(12px); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
 }
 
 @keyframes gn-slide {
-  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
 }
 
 @keyframes gn-pop {
-  from { opacity: 0; transform: scale(0.6); }
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
 }
 
 @keyframes gn-float {
-  50% { transform: translateY(-8px); }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 @keyframes gn-pulse {
-  50% { transform: scale(1.08); }
+  50% {
+    transform: scale(1.08);
+  }
 }
 
 @keyframes gn-wiggle {
-  30% { transform: rotate(-3deg); }
-  60% { transform: rotate(3deg); }
+  30% {
+    transform: rotate(-3deg);
+  }
+  60% {
+    transform: rotate(3deg);
+  }
 }
 
 @keyframes gn-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes gn-fall {
-  to { transform: translateY(110vh) rotate(540deg); }
+  to {
+    transform: translateY(110vh) rotate(540deg);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -82,10 +82,18 @@ function tv({ room, view: v, players, paused }: TvCtx<View>): HTMLElement {
           answers.map((a, i) => {
             const author = a.author ? players.get(a.author) : undefined;
             const share = total ? Math.round(((a.votes?.length ?? 0) / total) * 100) : 0;
-            const winner = result && !v.final && (a.points ?? 0) > 0 && answers.every((b) => (b.votes?.length ?? 0) <= (a.votes?.length ?? 0));
+            const winner =
+              result &&
+              !v.final &&
+              (a.points ?? 0) > 0 &&
+              answers.every((b) => (b.votes?.length ?? 0) <= (a.votes?.length ?? 0));
             return h(
               'article',
-              { class: `gn-answer-card${winner ? ' winner' : ''}${a.text === null ? ' empty' : ''}`, style: `--i:${i}`, 'data-testid': 'answer-card' },
+              {
+                class: `gn-answer-card${winner ? ' winner' : ''}${a.text === null ? ' empty' : ''}`,
+                style: `--i:${i}`,
+                'data-testid': 'answer-card',
+              },
               h('span', { class: 'gn-letter' }, letter(i)),
               h('p', { class: 'gn-answer-text' }, a.text ?? 'No answer!'),
               result &&
@@ -93,7 +101,11 @@ function tv({ room, view: v, players, paused }: TvCtx<View>): HTMLElement {
                   'footer',
                   {},
                   author ? h('div', { class: 'gn-by' }, avatar(author, 'sm'), nameTag(author)) : null,
-                  h('div', { class: 'gn-votes' }, (a.votes ?? []).map((id) => avatar(players.get(id), 'sm'))),
+                  h(
+                    'div',
+                    { class: 'gn-votes' },
+                    (a.votes ?? []).map((id) => avatar(players.get(id), 'sm')),
+                  ),
                   h('div', { class: 'gn-share' }, `${share}%`, gainedBadge(a.points ?? 0)),
                 ),
             );
@@ -105,7 +117,12 @@ function tv({ room, view: v, players, paused }: TvCtx<View>): HTMLElement {
     }
     case 'scores':
     case 'done':
-      return h('section', { class: 'gn-stage' }, tvHead(roundName(v), 'Scores', null, paused), scoreList(room, v.scores, v.gained));
+      return h(
+        'section',
+        { class: 'gn-stage' },
+        tvHead(roundName(v), 'Scores', null, paused),
+        scoreList(room, v.scores, v.gained),
+      );
   }
 }
 
@@ -142,7 +159,9 @@ function phone({ view: v, priv, send, paused, sending }: PhoneCtx<View, Priv>): 
     case 'vote': {
       if (priv.voted) return phoneNote('🗳️', 'Vote in!', 'Watch the TV.', 'voted');
       if (!priv.canVote) {
-        return priv.own.length ? phoneNote('🙈', 'That’s yours up there!', 'Everyone else is voting.') : lookUp();
+        return priv.own.length
+          ? phoneNote('🙈', 'That’s yours up there!', 'Everyone else is voting.')
+          : lookUp();
       }
       const answers = v.answers ?? [];
       if (v.final) return finalVote(v, priv, send);
@@ -178,7 +197,9 @@ function finalVote(v: View, priv: Priv, send: (a: unknown) => void): HTMLElement
   const submit = h('button', { class: 'gn-btn primary', type: 'button', 'data-testid': 'vote-submit' }, '');
   const sync = () => {
     submit.disabled = chosen.size === 0;
-    submit.textContent = chosen.size ? `Send ${chosen.size} vote${chosen.size > 1 ? 's' : ''}` : `Pick up to ${FINAL_VOTES}`;
+    submit.textContent = chosen.size
+      ? `Send ${chosen.size} vote${chosen.size > 1 ? 's' : ''}`
+      : `Pick up to ${FINAL_VOTES}`;
   };
   submit.addEventListener('click', () => send({ type: 'vote', choices: [...chosen] }));
   const buttons = (v.answers ?? []).map((a, i) => {

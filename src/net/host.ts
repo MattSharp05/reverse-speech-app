@@ -3,7 +3,14 @@ import { decode, encode } from '../audio/pcm';
 import type { ContentLibrary } from '../content/schema';
 import { modules as allModules } from '../games/registry';
 import type { Ctx, PlayerId } from '../platform/module';
-import { newRoom, PLAYER_ACTIONS, reduceRoom, type Modules, type RoomAction, type RoomState } from '../platform/room';
+import {
+  newRoom,
+  PLAYER_ACTIONS,
+  reduceRoom,
+  type Modules,
+  type RoomAction,
+  type RoomState,
+} from '../platform/room';
 import type { Channel } from './channel';
 import {
   cryptoAvailable,
@@ -192,7 +199,9 @@ export class HostRoom {
     if (this.closed) return;
     switch (message.t) {
       case 'hello':
-        return this.enqueue(message.from, () => this.hello(message.from, message.pub, message.name, message.sync === true));
+        return this.enqueue(message.from, () =>
+          this.hello(message.from, message.pub, message.name, message.sync === true),
+        );
       case 'act':
         return this.enqueue(message.from, () => this.act(message.from, message.box));
       case 'need':

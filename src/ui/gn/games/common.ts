@@ -3,7 +3,12 @@ import { timer } from '../core';
 import { buzz, play } from '../sound';
 
 /** A big phone message: emoji, title, line. */
-export function phoneNote(emoji: string, title: string, line?: string | Node | null, testId?: string): HTMLElement {
+export function phoneNote(
+  emoji: string,
+  title: string,
+  line?: string | Node | null,
+  testId?: string,
+): HTMLElement {
   return h(
     'div',
     { class: 'gn-note', 'data-testid': testId },
@@ -21,7 +26,12 @@ export function phoneHead(title: string, deadline: number | null, paused: boolea
 }
 
 /** The TV's header for a phase: big instruction, a subtitle, the countdown. */
-export function tvHead(kicker: string, title: string | Node, deadline: number | null, paused: boolean): HTMLElement {
+export function tvHead(
+  kicker: string,
+  title: string | Node,
+  deadline: number | null,
+  paused: boolean,
+): HTMLElement {
   return h(
     'header',
     { class: 'gn-tv-head' },
@@ -50,7 +60,12 @@ export function answerBox(options: {
   const counter = h('span', { class: 'gn-counter' }, '');
   const button = h(
     'button',
-    { class: 'gn-btn primary', type: 'button', disabled: options.disabled, 'data-testid': `${options.testId ?? 'answer'}-submit` },
+    {
+      class: 'gn-btn primary',
+      type: 'button',
+      disabled: options.disabled,
+      'data-testid': `${options.testId ?? 'answer'}-submit`,
+    },
     options.button,
   );
   const sync = () => {
@@ -77,7 +92,10 @@ export function answerBox(options: {
 }
 
 /** A tall choice button for votes and picks. */
-export function choiceButton(label: string, options: { disabled?: boolean; note?: string; selected?: boolean; testId?: string; onClick(): void }): HTMLButtonElement {
+export function choiceButton(
+  label: string,
+  options: { disabled?: boolean; note?: string; selected?: boolean; testId?: string; onClick(): void },
+): HTMLButtonElement {
   const button = h(
     'button',
     {

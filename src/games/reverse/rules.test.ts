@@ -8,10 +8,15 @@ const words = (id: string, n: number) =>
 function setup(n = 4, settings = {}) {
   const ctx = testCtx(9);
   let s = reverse.init(players(n), { ...reverse.defaults, ...settings }, ctx);
-  return { ctx, s, lockAll() {
-    for (const p of s.players) s = reverse.act(s, p.id, { type: 'lockIn', words: words(p.id, s.rounds) }, ctx);
-    return s;
-  } };
+  return {
+    ctx,
+    s,
+    lockAll() {
+      for (const p of s.players)
+        s = reverse.act(s, p.id, { type: 'lockIn', words: words(p.id, s.rounds) }, ctx);
+      return s;
+    },
+  };
 }
 
 describe('party reverse', () => {
@@ -24,7 +29,9 @@ describe('party reverse', () => {
       { text: 'other', clip: 'p0-c' },
     ];
     expect(reverse.act(s, 'p0', { type: 'lockIn', words: dupes }, ctx)).toBe(s);
-    expect(reverse.act(s, 'p0', { type: 'lockIn', words: [{ text: 'a', clip: '' }, ...words('p0', 2)] }, ctx)).toBe(s);
+    expect(
+      reverse.act(s, 'p0', { type: 'lockIn', words: [{ text: 'a', clip: '' }, ...words('p0', 2)] }, ctx),
+    ).toBe(s);
     const locked = reverse.act(s, 'p0', { type: 'lockIn', words: words('p0', 3) }, ctx);
     expect(locked.locked).toEqual(['p0']);
     expect(reverse.act(locked, 'p0', { type: 'lockIn', words: words('p0', 3) }, ctx)).toBe(locked);

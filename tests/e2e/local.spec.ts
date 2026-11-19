@@ -5,7 +5,7 @@ const ANA = ['cat', 'banana', 'rocket', 'pizza', 'tiger'];
 const BEN = ['dog', 'apple', 'guitar', 'lemon', 'pencil'];
 
 test('two players finish a game on one phone', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?mode=classic');
   await page.getByRole('button', { name: /One phone/ }).click();
   await page.getByTestId('name-1').fill('Ana');
   await page.getByTestId('name-2').fill('Ben');

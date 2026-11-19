@@ -1,14 +1,32 @@
-# Esrever
+# Game Night
 
-The say-it-backwards word game for two. A mobile web app: play on one phone, or on two
-phones online.
+Party games on one big screen, played with your phones, in the spirit of Jackbox. Open it on a
+laptop plugged into the TV, create a room, and everyone joins from their phone's browser with
+the room code or QR code. No app and no accounts. Players stay in the room between games.
 
-1. Each player types 5 secret words and records themselves saying them (the other player
-   covers their ears).
-2. Each round, a player hears the other's word **reversed**, records themselves copying that
-   backwards sound, then hears their copy reversed again, which sounds close to the real word.
-3. They type a guess. Right answers score (case, spaces and one typo on longer words don't
-   matter; the word's owner can "Count it" for a near miss). 5 rounds each; most points wins.
+| Game            | What happens                                                                                                                       | Players |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| **Reverse**     | Everyone records secret words. Each round you get someone else's word played backwards, copy the sound, flip your copy, and guess. | 2–10    |
+| **Quip Battle** | Two players answer each ridiculous prompt; everyone else votes for the funnier one. Final round: everyone answers one prompt.      | 3–10    |
+| **Bluff It**    | Write a believable fake answer to strange trivia, then find the real answer among everyone's lies.                                 | 2–10    |
+| **Sketch It**   | Draw a secret absurd prompt on your phone, write fake titles for each other's drawings, then spot the real one.                    | 3–10    |
+
+**Classic Esrever**, the original two-player Reverse on one phone or two, is still there:
+"Play classic Reverse" on the home page (`/?mode=classic`). Old `?room=` links still open it.
+
+## Playing
+
+1. On the laptop/TV: open the site and click **Host on this screen**.
+2. Friends scan the QR code (or open the site and tap **Join on my phone**) and enter the code.
+3. Pick a game, adjust its settings if you like, and **Start**. Phases run on timers; the
+   host can **Pause**, **Skip**, **End game**, remove players (✕ in the lobby), and after a
+   game **Play again** or go **Back to Game Night** for another game.
+4. Refreshing a phone keeps the player and their answers. If the TV's tab reloads, the room
+   picks up where it was.
+
+Phones need **HTTPS** for the microphone (Reverse) and for sealed messages, so play on the
+Vercel deployment. Locally, open `/?net=local` in several tabs of one browser: one hosts, the
+others join (no server needed).
 
 ## Run it
 
@@ -17,27 +35,38 @@ pnpm install
 pnpm dev          # http://localhost:5173
 ```
 
-Phones need **HTTPS** to use the microphone, so test on a phone with the Vercel deployment
-(or `localhost` on a desktop). On an iPhone, Share → Add to Home Screen gives it an app icon.
+## Online (Supabase)
 
-Online play locally, no server: open `/?net=local` in two tabs of the same browser.
-
-## Online play (Supabase)
-
-Online rooms use Supabase Realtime **Broadcast** only: no tables, no SQL, nothing stored. Set
-two env vars (in Vercel → Settings → Environment Variables, and `.env.local` for `pnpm dev`):
+Rooms use Supabase Realtime **Broadcast** only: no tables, nothing stored. Set two env vars
+(in Vercel → Settings → Environment Variables, and `.env.local` for `pnpm dev`):
 
 ```
 VITE_SUPABASE_URL=https://<project>.supabase.co
 VITE_SUPABASE_ANON_KEY=<anon / publishable key>
 ```
 
-Without them the app works one-phone only and the online button says it isn't set up.
+## How it works
+
+- The **TV is the authority**: it runs every game's rules, the timers and the scores; phones
+  only send requests, which the TV validates (right phase, right player, once).
+- Everything on a broadcast channel is heard by everyone, so each phone and the TV agree an
+  AES-GCM key (ECDH, WebCrypto) and private things travel sealed: your prompts, your answers,
+  your drawing prompt. Correct answers never leave the TV before their reveal.
+- See [docs/game-night-plan.md](docs/game-night-plan.md) for the architecture and
+  [CREDITS.md](CREDITS.md) for where the prompts and trivia come from (and their licenses).
+
+## Content
+
+1,228 Quip prompts, 3,705 trivia questions and 713 drawing prompts are built in. The TV's
+**Content packs** button loads your own JSON or CSV packs (kept in that browser). To rebuild
+the built-in packs from the sources: `node scripts/import-content.mjs <sources dir>`.
 
 ## Checks
 
-- `pnpm test`: unit tests (rules, word matching, audio processing, room sync)
-- `pnpm test:e2e`: Playwright, a full one-phone game and a full online game (Chromium's fake mic)
+- `pnpm test`: unit tests (room and game rules, scoring, content, networking with sealed
+  messages, audio processing)
+- `pnpm test:e2e`: Playwright: classic Esrever on one and two phones, and Game Night with a TV
+  and three phones (every game, reconnects, pause, kicks, TV reload)
 - `pnpm check`: everything
 
 ## Deploy

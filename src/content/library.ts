@@ -81,9 +81,13 @@ const list = (v: unknown): string[] =>
   Array.isArray(v)
     ? v.map((x) => cleanText(x, 60)).filter(Boolean)
     : typeof v === 'string'
-      ? v.split(/[;|]/).map((x) => x.trim()).filter(Boolean)
+      ? v
+          .split(/[;|]/)
+          .map((x) => x.trim())
+          .filter(Boolean)
       : [];
-const obj = (v: unknown): Record<string, unknown> => (typeof v === 'object' && v !== null ? (v as Record<string, unknown>) : {});
+const obj = (v: unknown): Record<string, unknown> =>
+  typeof v === 'object' && v !== null ? (v as Record<string, unknown>) : {};
 
 /**
  * A pack from the host's file. Accepts Game Night's own format (`quip` / `bluff` / `sketch`
@@ -106,7 +110,9 @@ export function parsePack(raw: unknown, fallbackId: string): Pack | null {
       source,
     };
   };
-  const quip = (Array.isArray(p.quip) ? p.quip : []).map((x) => prompt('q', x)).filter((x): x is QuipPrompt => x !== null);
+  const quip = (Array.isArray(p.quip) ? p.quip : [])
+    .map((x) => prompt('q', x))
+    .filter((x): x is QuipPrompt => x !== null);
   const sketch = (Array.isArray(p.sketch) ? p.sketch : [])
     .map((x) => prompt('s', x))
     .filter((x): x is SketchPrompt => x !== null);

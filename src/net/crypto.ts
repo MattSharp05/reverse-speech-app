@@ -32,7 +32,8 @@ const ECDH = { name: 'ECDH', namedCurve: 'P-256' } as const;
 function toBase64(bytes: ArrayBuffer | Uint8Array): string {
   const view = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
   let binary = '';
-  for (let i = 0; i < view.length; i += 0x8000) binary += String.fromCharCode(...view.subarray(i, i + 0x8000));
+  for (let i = 0; i < view.length; i += 0x8000)
+    binary += String.fromCharCode(...view.subarray(i, i + 0x8000));
   return btoa(binary);
 }
 
@@ -58,10 +59,13 @@ export async function loadIdentity(saved: SavedIdentity): Promise<Identity> {
 /** The key two ends share: mine (private) with theirs (public). */
 export async function sharedKey(mine: Identity, theirs: string): Promise<CryptoKey> {
   const publicKey = await subtle()!.importKey('raw', fromBase64(theirs), ECDH, false, []);
-  return subtle()!.deriveKey({ name: 'ECDH', public: publicKey }, mine.privateKey, { name: 'AES-GCM', length: 256 }, false, [
-    'encrypt',
-    'decrypt',
-  ]);
+  return subtle()!.deriveKey(
+    { name: 'ECDH', public: publicKey },
+    mine.privateKey,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt'],
+  );
 }
 
 export async function seal(key: CryptoKey, value: unknown): Promise<Sealed> {
@@ -74,7 +78,11 @@ export async function seal(key: CryptoKey, value: unknown): Promise<Sealed> {
 /** The sealed value, or null when it wasn't sealed with this key (or was tampered with). */
 export async function unseal(key: CryptoKey, sealed: Sealed): Promise<unknown> {
   try {
-    const data = await subtle()!.decrypt({ name: 'AES-GCM', iv: fromBase64(sealed.iv) }, key, fromBase64(sealed.ct));
+    const data = await subtle()!.decrypt(
+      { name: 'AES-GCM', iv: fromBase64(sealed.iv) },
+      key,
+      fromBase64(sealed.ct),
+    );
     return JSON.parse(new TextDecoder().decode(data));
   } catch {
     return null;

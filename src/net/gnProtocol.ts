@@ -13,7 +13,13 @@ export type Box = Sealed | { plain: unknown };
  */
 export type GnMessage =
   /** A phone: "I'm here" (every couple of seconds). `pub` is null without WebCrypto (dev). */
-  | { t: 'hello'; from: PlayerId; pub: string | null; name: string; /** Has no state yet: send it now. */ sync?: boolean }
+  | {
+      t: 'hello';
+      from: PlayerId;
+      pub: string | null;
+      name: string;
+      /** Has no state yet: send it now. */ sync?: boolean;
+    }
   | {
       t: 'state';
       from: 'host';

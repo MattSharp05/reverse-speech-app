@@ -1,4 +1,13 @@
-import { CANVAS_H, CANVAS_W, COLORS, MAX_COORDS, MAX_STROKES, SIZES, type Drawing, type Stroke } from '../../../games/sketch/rules';
+import {
+  CANVAS_H,
+  CANVAS_W,
+  COLORS,
+  MAX_COORDS,
+  MAX_STROKES,
+  SIZES,
+  type Drawing,
+  type Stroke,
+} from '../../../games/sketch/rules';
 import { h, toast } from '../../dom';
 
 /** Draws `strokes` on a canvas whose size is the drawing space scaled to the element. */
@@ -35,7 +44,12 @@ export function paint(canvas: HTMLCanvasElement, strokes: Drawing, live?: Stroke
 
 /** A drawing for the TV (fills its box, 4:3). */
 export function drawingView(strokes: Drawing | null, testId = 'drawing'): HTMLElement {
-  const canvas = h('canvas', { class: 'gn-drawing', width: CANVAS_W * 1.5, height: CANVAS_H * 1.5, 'data-testid': testId });
+  const canvas = h('canvas', {
+    class: 'gn-drawing',
+    width: CANVAS_W * 1.5,
+    height: CANVAS_H * 1.5,
+    'data-testid': testId,
+  });
   if (strokes) paint(canvas, strokes);
   return canvas;
 }
@@ -52,7 +66,12 @@ const coordCount = (strokes: Drawing) => strokes.reduce((n, s) => n + s.p.length
 export function drawPad(key: string, onSubmit: (drawing: Drawing) => void, disabled: boolean): HTMLElement {
   const pad = pads.get(key) ?? { strokes: [], color: 0, size: 1 };
   pads.set(key, pad);
-  const canvas = h('canvas', { class: 'gn-pad-canvas', width: CANVAS_W, height: CANVAS_H, 'data-testid': 'pad' });
+  const canvas = h('canvas', {
+    class: 'gn-pad-canvas',
+    width: CANVAS_W,
+    height: CANVAS_H,
+    'data-testid': 'pad',
+  });
   let live: Stroke | null = null;
   const redraw = () => paint(canvas, pad.strokes, live ?? undefined);
   const point = (e: PointerEvent): [number, number] => {
@@ -120,7 +139,11 @@ export function drawPad(key: string, onSubmit: (drawing: Drawing) => void, disab
   );
   const undo = h('button', { class: 'gn-btn small', type: 'button', 'data-testid': 'undo' }, '↶ Undo');
   const clear = h('button', { class: 'gn-btn small', type: 'button', 'data-testid': 'clear' }, 'Clear');
-  const submit = h('button', { class: 'gn-btn primary', type: 'button', 'data-testid': 'draw-submit' }, 'Submit drawing');
+  const submit = h(
+    'button',
+    { class: 'gn-btn primary', type: 'button', 'data-testid': 'draw-submit' },
+    'Submit drawing',
+  );
   const sync = () => {
     undo.disabled = clear.disabled = submit.disabled = disabled || pad.strokes.length === 0;
   };
@@ -144,7 +167,12 @@ export function drawPad(key: string, onSubmit: (drawing: Drawing) => void, disab
     'div',
     { class: 'gn-pad' },
     canvas,
-    h('div', { class: 'gn-pad-tools' }, h('div', { class: 'gn-swatches' }, swatches), h('div', { class: 'gn-sizes' }, sizes)),
+    h(
+      'div',
+      { class: 'gn-pad-tools' },
+      h('div', { class: 'gn-swatches' }, swatches),
+      h('div', { class: 'gn-sizes' }, sizes),
+    ),
     h('div', { class: 'gn-pad-actions' }, undo, clear, submit),
   );
 }

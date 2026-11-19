@@ -66,7 +66,10 @@ describe('custom packs', () => {
 
   it('remembers used ids', () => {
     const store = new Map<string, string>();
-    const s = { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => void store.set(k, v) };
+    const s = {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, v),
+    };
     const library = buildLibrary([]);
     rememberUsed(s, library, ['a', 'b']);
     rememberUsed(s, library, ['a']);

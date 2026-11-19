@@ -21,7 +21,8 @@ const src = process.argv[2];
 const out = join(root, 'src/content/packs');
 const original = join(root, 'content/original');
 
-const id = (prefix, text) => `${prefix}-${createHash('sha1').update(text.toLowerCase()).digest('hex').slice(0, 10)}`;
+const id = (prefix, text) =>
+  `${prefix}-${createHash('sha1').update(text.toLowerCase()).digest('hex').slice(0, 10)}`;
 const read = (path) => (src && existsSync(join(src, path)) ? readFileSync(join(src, path), 'utf8') : null);
 const warn = (what) => console.warn(`skipped ${what} (not found under ${src ?? '<no sources dir>'})`);
 
@@ -68,11 +69,7 @@ function decodeEntities(text) {
     .replace(/&[a-z]+;/g, '');
 }
 
-const tidy = (text) =>
-  text
-    .replace(/\s+/g, ' ')
-    .replace(/_{1,}/g, '___')
-    .trim();
+const tidy = (text) => text.replace(/\s+/g, ' ').replace(/_{1,}/g, '___').trim();
 
 /** Drops duplicates (same words, case and punctuation aside) across all packs of a kind. */
 function dedupe(packs, key) {
@@ -80,7 +77,10 @@ function dedupe(packs, key) {
   let dropped = 0;
   for (const pack of packs) {
     pack[key] = pack[key].filter((item) => {
-      const norm = item.text.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      const norm = item.text
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim();
       if (!norm || seen.has(norm)) {
         dropped++;
         return false;
@@ -157,7 +157,13 @@ if (digual) {
       });
     }
   }
-  quipPacks.push({ id: 'digual', title: 'Digual Games', source: 'https://github.com/argosautomation/digual-games', license: 'MIT (per README)', quip });
+  quipPacks.push({
+    id: 'digual',
+    title: 'Digual Games',
+    source: 'https://github.com/argosautomation/digual-games',
+    license: 'MIT (per README)',
+    quip,
+  });
 } else warn('digual prompts');
 
 const quiplibre = read('repos/hyperdriveguy__quiplibre/prompts.json');
@@ -187,7 +193,13 @@ if (cah) {
     .filter((card) => card.pick === 1 && card.text.length <= 140)
     .map((card) => {
       const text = tidy(decodeEntities(card.text.replace(/<br>/g, ' ')));
-      return { id: id('q', text), text, category: 'cards against humanity', maturity: 'adult', source: 'cah' };
+      return {
+        id: id('q', text),
+        text,
+        category: 'cards against humanity',
+        maturity: 'adult',
+        source: 'cah',
+      };
     });
   quipPacks.push({
     id: 'cah',
@@ -207,7 +219,9 @@ const rumpusFib = read('repos/rumpus/games/data/fibbage-questions.js');
 if (rumpusFib) {
   const decoys = JSON.parse(readFileSync(join(original, 'rumpus-decoys.json'), 'utf8'));
   const bluff = [];
-  for (const m of rumpusFib.matchAll(/\{\s*q:\s*('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"),\s*answer:\s*('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")/g)) {
+  for (const m of rumpusFib.matchAll(
+    /\{\s*q:\s*('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"),\s*answer:\s*('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")/g,
+  )) {
     const [q, answer] = [strings(m[1])[0], strings(m[2])[0]];
     // Only the facts we kept (a few in the source are wrong or unverifiable; see CREDITS.md).
     if (!decoys[answer]) continue;
@@ -224,7 +238,13 @@ if (rumpusFib) {
       license: 'AGPL-3.0',
     });
   }
-  bluffPacks.push({ id: 'rumpus', title: 'Rumpus (weird facts)', source: 'https://github.com/rodwilco/rumpus', license: 'AGPL-3.0', bluff });
+  bluffPacks.push({
+    id: 'rumpus',
+    title: 'Rumpus (weird facts)',
+    source: 'https://github.com/rodwilco/rumpus',
+    license: 'AGPL-3.0',
+    bluff,
+  });
 } else warn('rumpus Fibbage questions');
 
 const pagesDir = src && join(src, 'import/opentdb/pages');
@@ -248,7 +268,12 @@ if (pagesDir && existsSync(pagesDir)) {
       const question = decodeEntities(r.question);
       const answer = decodeEntities(r.correct_answer).trim();
       // Bluff It shows the answer among lies: skip questions that only work as multiple choice.
-      if (/\b(which|what) (of|one of) (these|the following)\b|following|\bnot\b|\bnone\b|\ball of\b|\bthese\b/i.test(question)) continue;
+      if (
+        /\b(which|what) (of|one of) (these|the following)\b|following|\bnot\b|\bnone\b|\ball of\b|\bthese\b/i.test(
+          question,
+        )
+      )
+        continue;
       if (answer.length > 32 || answer.split(' ').length > 5) continue;
       bluff.push({
         id: id('b', question),
@@ -298,13 +323,20 @@ if (quickdraw) {
   const situations = lines('situations.txt');
   // Deterministic pairing: each subject once, each situation spread evenly.
   let seed = 7;
-  const rand = () => ((seed = (seed * 1103515245 + 12345) % 2 ** 31) / 2 ** 31);
+  const rand = () => (seed = (seed * 1103515245 + 12345) % 2 ** 31) / 2 ** 31;
   const sketch = nouns.map((noun, i) => {
     const situation = situations[(i + Math.floor(rand() * situations.length)) % situations.length];
     const plural = /[^s]s$/.test(noun) && !/(bus|cactus|octopus|lips)$/.test(noun);
     const article = plural ? 'Some' : /^[aeiou]/.test(noun) ? 'An' : 'A';
     const text = `${article} ${noun} ${situation}`;
-    return { id: id('s', text), text, category: 'mash-ups', maturity: 'family', source: 'quickdraw', license: 'CC BY 4.0' };
+    return {
+      id: id('s', text),
+      text,
+      category: 'mash-ups',
+      maturity: 'family',
+      source: 'quickdraw',
+      license: 'CC BY 4.0',
+    };
   });
   sketchPacks.push({
     id: 'quickdraw',
@@ -351,7 +383,8 @@ const drops = {
   bluff: dedupe(bluffPacks, 'bluff'),
   sketch: dedupe(sketchPacks, 'sketch'),
 };
-const write = (name, packs) => writeFileSync(join(out, `${name}.json`), JSON.stringify(packs, null, 0) + '\n');
+const write = (name, packs) =>
+  writeFileSync(join(out, `${name}.json`), JSON.stringify(packs, null, 0) + '\n');
 write('quip', quipPacks);
 write('bluff', bluffPacks);
 write('sketch', sketchPacks);
