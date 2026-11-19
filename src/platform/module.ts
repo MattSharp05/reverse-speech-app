@@ -51,8 +51,10 @@ export interface GameModule<S extends Timed = Timed, Settings = Record<string, s
   done(state: S): boolean;
   /** Content ids this game used, remembered so the next games avoid them. */
   used(state: S): string[];
-  /** Audio clip ids the game refers to (Reverse). */
+  /** Audio clip ids the game refers to (Reverse): the TV fetches any it lacks. */
   clips?(state: S): string[];
+  /** Audio clips one player's phone needs right now (Reverse). */
+  playerClips?(state: S, player: PlayerId): string[];
 }
 
 export const asRecord = (value: unknown): Record<string, unknown> =>

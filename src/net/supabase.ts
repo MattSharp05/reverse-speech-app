@@ -1,9 +1,9 @@
 import { createClient, type RealtimeChannel } from '@supabase/supabase-js';
 import type { Channel } from './channel';
-import type { Message } from './protocol';
 
 /**
- * Online rooms ride Supabase Realtime Broadcast: room `CODE` is channel `esrever:CODE`.
+ * Online rooms ride Supabase Realtime Broadcast: room `CODE` is channel `esrever:CODE` (Game
+ * Night: `gn:CODE`).
  * Nothing is stored server-side; a room exists while someone is in it. Loaded only when a
  * player goes online, so it never weighs on the first page load.
  */
@@ -12,24 +12,24 @@ import type { Message } from './protocol';
 const SEND_INTERVAL_MS = 70;
 const RATE_LIMITED_RETRY_MS = 600;
 
-export async function supabaseChannel(code: string): Promise<Channel> {
+export async function supabaseChannel<M extends { t: string }>(name: string): Promise<Channel<M>> {
   const url = import.meta.env.VITE_SUPABASE_URL as string;
   const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
   const supabase = createClient(url, key, {
     auth: { persistSession: false },
     realtime: { params: { eventsPerSecond: 20 } },
   });
-  const channel: RealtimeChannel = supabase.channel(`esrever:${code}`, {
+  const channel: RealtimeChannel = supabase.channel(name, {
     config: { broadcast: { self: false, ack: false } },
   });
-  const handlers: ((message: Message) => void)[] = [];
+  const handlers: ((message: M) => void)[] = [];
   channel.on('broadcast', { event: 'm' }, ({ payload }) => {
-    for (const handler of handlers) handler(payload as Message);
+    for (const handler of handlers) handler(payload as M);
   });
 
   let subscribed = false;
   let closed = false;
-  const outbox: Message[] = [];
+  const outbox: M[] = [];
   let draining = false;
   const drain = async () => {
     if (draining || !subscribed) return;

@@ -253,6 +253,11 @@ export const reverse: GameModule<ReverseState, ReverseSettings> = {
   scores: (s) => s.scores,
   done: (s) => s.phase === 'done',
   used: () => [],
+  playerClips(s, id) {
+    if (s.phase !== 'guess') return [];
+    const a = s.attempts.find((x) => x.guesser === id);
+    return a ? [s.words[a.word]!.clip] : [];
+  },
   clips(s) {
     return [...s.words.map((w) => w.clip), ...s.attempts.flatMap((a) => (a.mimic ? [a.mimic] : []))];
   },

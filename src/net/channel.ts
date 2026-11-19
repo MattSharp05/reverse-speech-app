@@ -1,9 +1,9 @@
 import type { Message } from './protocol';
 
 /** A room's broadcast channel. Messages reach everyone else in the room, not the sender. */
-export interface Channel {
-  send(message: Message): void;
-  onMessage(handler: (message: Message) => void): void;
+export interface Channel<M = Message> {
+  send(message: M): void;
+  onMessage(handler: (message: M) => void): void;
   close(): void;
 }
 
@@ -15,17 +15,22 @@ export const localNet = (): boolean => new URLSearchParams(location.search).get(
 
 export const onlineAvailable = (): boolean => localNet() || supabaseConfigured();
 
-export async function openChannel(code: string): Promise<Channel> {
-  if (localNet()) return localChannel(code);
+/** Room `code`'s channel. `prefix` keeps apart rooms of classic Esrever and Game Night. */
+export async function openChannel<M extends { t: string } = Message>(
+  code: string,
+  prefix = 'esrever',
+): Promise<Channel<M>> {
+  const name = `${prefix}:${code}`;
+  if (localNet()) return localChannel<M>(name);
   const { supabaseChannel } = await import('./supabase');
-  return supabaseChannel(code);
+  return supabaseChannel<M>(name);
 }
 
-function localChannel(code: string): Channel {
-  const channel = new BroadcastChannel(`esrever:${code}`);
+function localChannel<M>(name: string): Channel<M> {
+  const channel = new BroadcastChannel(name);
   return {
     send: (message) => channel.postMessage(message),
-    onMessage: (handler) => channel.addEventListener('message', (event) => handler(event.data as Message)),
+    onMessage: (handler) => channel.addEventListener('message', (event) => handler(event.data as M)),
     close: () => channel.close(),
   };
 }
