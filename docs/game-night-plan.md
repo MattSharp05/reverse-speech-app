@@ -1,6 +1,24 @@
 # Game Night — architecture & implementation plan
 
-Status: **proposal, awaiting review**. Nothing below is implemented yet.
+Status: **reviewed 2026-11-19, in progress.** Decisions:
+
+1. Where the game runs: the TV/laptop browser tab is the "brain" (no server to host).
+2. Reverse supports any number of players: everyone records words, and each round every player gets a random word that belongs to someone else. Players aren't paired off head-to-head. Classic 2-player Esrever stays (one phone or two phones).
+3. Content: import from the researched sources. This is a hobby game for friends: copyleft and non-commercial licenses are fine with attribution in `CREDITS.md`. Copyrighted sets with no license at all (the Jackbox Fibbage dump, Sucker Punchline) stay out of the public repo; instead the TV can load a private JSON/CSV pack from disk.
+4. QR codes: `uqr` (MIT), as in kart-racer.
+
+## 0. Reused from kart-racer (MattSharp05/kart-racer)
+
+| Reused | From | How |
+| --- | --- | --- |
+| QR codes | `src/remote/qr.ts` + `uqr` 0.1.3 (ADR 0013) | Copied: SVG path from `encode()`, ECC M, lazy-loaded |
+| Room codes | `src/net/room.ts` `ROOM_CODE_ALPHABET` (no look-alikes) | 4 chars from `A–Z 2–9` minus `I O 0 1` |
+| Presence | `src/net/roomBackendSupabase.ts` (Realtime presence keyed by member id, re-track on rejoin) | Who is connected comes from presence; heartbeat stays as a fallback for `?net=local` |
+| Phone ↔ desktop pattern | `src/remote/hub.ts` (slots, drop after silence, rescan takes the slot back) | Same rules: a phone that comes back with its identity takes its seat back |
+| Haptics | `src/remote/haptics.ts` | `navigator.vibrate` on "your turn" and "time almost up" |
+| Synthesized audio | ADR 0004 / `src/audio/synth.ts` | Effects made with WebAudio oscillators, so there are no audio files |
+
+Not reused: WebRTC data channels and the TURN function. Party games send a few messages per second, which Supabase Broadcast handles well within quota; WebRTC would add NAT/TURN failure modes and a Vercel function with Cloudflare keys.
 
 ## 1. What exists today (Esrever / "Reverse")
 
@@ -112,7 +130,9 @@ The platform owns: who may act (joined, not kicked, in this game), phase deadlin
 
 ### Reverse in Game Night
 
-Reverse is a 2-player voice game, so the host picks two players from the room (default: first two to opt in); everyone else watches the TV, which shows turns, plays the reversed clip and copies aloud for the room, and shows scores. The two players' phones run today's lock-in/record/guess screens unchanged. The existing **one-phone pass-and-play mode stays** on the phone home screen. Rules, matching, and clip transport are unchanged; existing unit and e2e tests keep passing (the online e2e gets updated to the new join flow).
+**Party Reverse (any number of players, 2+):** everyone records K secret words at once (default 3). Each round, every player is dealt a random word that belongs to someone else, and every word is used once. On their own phone, a player hears it reversed, records a copy, hears the copy reversed, and types a guess, all against the round timer. Reveal on the TV: for each player, it plays the reversed copy, shows the guess and the real word, and the word's owner can tap "Count it" for a near miss. +1 point per correct guess. Guessing reuses `match.ts`, and the audio reuses `pcm.ts`/`engine.ts`/widgets, with clips sent as chunked blobs as today.
+
+**Classic Esrever stays unchanged:** one-phone pass-and-play and the 2-phone online mode keep their current code and tests.
 
 ## 5. Game rules summary
 
