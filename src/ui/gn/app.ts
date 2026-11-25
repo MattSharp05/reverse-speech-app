@@ -30,6 +30,7 @@ import { hotTakesUi } from './games/hottakes';
 import { doodleUi } from './games/doodle';
 import type { GameUi } from './games/types';
 import { qrSvg } from './qr';
+import { music, sceneFor, TICK_FROM_MS } from './music';
 import { buzz, isMuted, play, setMuted, unlockSound } from './sound';
 
 const UIS: Record<GameId, GameUi> = {
@@ -120,8 +121,10 @@ export class GameNight {
     this.root = h('main', { class: 'gn-root' });
     root.append(this.root);
     onClip(() => refreshClipButtons());
+    music.onChange(() => this.render(true));
     document.addEventListener('pointerdown', () => {
       unlockSound();
+      music.resume();
       void unlock().catch(() => undefined);
     });
     (window as unknown as { __gn: unknown }).__gn = this;
@@ -167,7 +170,8 @@ export class GameNight {
       toast('Couldn’t create the room. Check your connection and try again.');
       return this.go({ name: 'home' });
     }
-    startTicker(Date.now, true);
+    // The ticking clock in the music replaces the synthesized ticks.
+    startTicker(Date.now, false);
     this.setUrl('tv', code);
     this.host.subscribe(() => this.render());
     this.lastPlayers = this.host.room.players.length;
@@ -178,6 +182,7 @@ export class GameNight {
     if (!confirm('Close this Game Night room? Everyone will be disconnected.')) return;
     this.host?.close();
     this.host = null;
+    music.stopAll();
     this.setUrl(null);
     this.go({ name: 'home' });
   }
@@ -219,6 +224,7 @@ export class GameNight {
         this.host.publicRoom(),
         this.packsOpen,
         isMuted(),
+        music.blocked,
         this.host.room.settings,
       ]);
     if (this.view.name === 'phone' && this.client) {
@@ -252,6 +258,7 @@ export class GameNight {
   }
 
   render(force = false): void {
+    this.music();
     const key = this.key();
     if (!force && key === this.lastKey) return;
     this.lastKey = key;
@@ -281,6 +288,15 @@ export class GameNight {
     ]);
   }
 
+  /** The TV's background music follows the game (and ticks in a timer's last seconds). */
+  private music(): void {
+    if (this.view.name !== 'tv' || !this.host) return music.stopAll();
+    const room = this.host.publicRoom();
+    const deadline = (room.game?.view as { deadline?: number | null } | undefined)?.deadline ?? null;
+    const left = deadline === null ? Infinity : deadline - Date.now();
+    music.update(sceneFor(room), left > 0 && left <= TICK_FROM_MS);
+  }
+
   private sounds(): void {
     const room = this.host?.publicRoom();
     if (!room) return;
@@ -291,9 +307,10 @@ export class GameNight {
       : '';
     if (phase && phase !== this.lastPhase) {
       const p = (room.game!.view as { phase?: string }).phase ?? '';
-      if (room.game!.over) play('win');
+      if (room.game!.over) music.sting('winner');
       else if (!this.lastPhase.startsWith(room.game!.id)) play('start');
-      else if (/result|reveal/.test(p)) play('reveal');
+      else if (/result|reveal/.test(p)) music.sting('reveal');
+      else if ((room.game!.id === 'oddone' && p === 'guess') || p === 'show') music.sting('drumroll');
       else play('phase');
     }
     this.lastPhase = phase;
@@ -392,6 +409,7 @@ export class GameNight {
         '• Quiplibre (hyperdriveguy/quiplibre), AGPL-3.0\n' +
         '• Digual Games fallback prompts (argosautomation/digual-games), MIT per README\n' +
         '• Pictionary idioms (nick-aschenbach/game-words), MIT\n\n' +
+        'Music: "Monkeys Spinning Monkeys", "Thinking Music", "Carefree", "Umbrella Pants", "Der Kleber Sting", "Heroic Reception" by Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (creativecommons.org/licenses/by/4.0). Ticking clock (AppleCorey) and drum roll (HoBoTrails) from freesound.org, CC0.\n\n' +
         'Full list with links: CREDITS.md in the source repository.',
     );
   }
@@ -490,6 +508,36 @@ export class GameNight {
       },
       isMuted() ? '🔇' : '🔊',
     );
+    const volume = h('input', {
+      type: 'range',
+      min: 0,
+      max: 100,
+      value: String(Math.round(music.volume * 100)),
+      class: 'gn-volume',
+      title: 'Music volume',
+      'aria-label': 'Music volume',
+      'data-testid': 'music-volume',
+    });
+    volume.addEventListener('input', () => music.setVolume(Number(volume.value) / 100));
+    const sound = h(
+      'div',
+      { class: 'gn-sound' },
+      music.blocked && !isMuted()
+        ? h(
+            'button',
+            {
+              class: 'gn-btn small',
+              type: 'button',
+              'data-testid': 'start-music',
+              onclick: () => music.resume(),
+            },
+            '🎵 Start music',
+          )
+        : null,
+      h('span', { 'aria-hidden': 'true' }, '🎵'),
+      volume,
+      muteBtn,
+    );
     const controls = game
       ? game.over
         ? []
@@ -556,7 +604,7 @@ export class GameNight {
         ' · code ',
         h('b', { 'data-testid': 'bar-code' }, room.code),
       ),
-      h('div', { class: 'gn-bar-actions' }, controls, muteBtn),
+      h('div', { class: 'gn-bar-actions' }, controls, sound),
     );
   }
 

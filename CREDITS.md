@@ -41,6 +41,25 @@ The TV's lobby has **Content packs**: load a JSON pack (`{ "quip": [...], "bluff
 "sketch": [...] }`, see `src/content/library.ts`) or a CSV (`game,text,answer,decoys,category,maturity`).
 Custom packs are kept in that browser only.
 
+## Music and sound (`public/music/`, played on the TV)
+
+Re-encoded to smaller MP3s; the drum roll is trimmed to 3.6 s. Kevin MacLeod's tracks are CC BY 4.0
+and need this credit (also shown on the home page's Credits):
+
+| File           | Track                                                                                                                 | Credit / license                                                                                                                  |
+| -------------- | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `lobby.mp3`    | "Monkeys Spinning Monkeys"                                                                                            | Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0, http://creativecommons.org/licenses/by/4.0/ |
+| `thinking.mp3` | "Thinking Music"                                                                                                      | Kevin MacLeod (incompetech.com), CC BY 4.0                                                                                        |
+| `drawing.mp3`  | "Carefree"                                                                                                            | Kevin MacLeod (incompetech.com), CC BY 4.0                                                                                        |
+| `voting.mp3`   | "Umbrella Pants"                                                                                                      | Kevin MacLeod (incompetech.com), CC BY 4.0                                                                                        |
+| `reveal.mp3`   | "Der Kleber Sting"                                                                                                    | Kevin MacLeod (incompetech.com), CC BY 4.0                                                                                        |
+| `winner.mp3`   | "Heroic Reception"                                                                                                    | Kevin MacLeod (incompetech.com), CC BY 4.0                                                                                        |
+| `ticking.mp3`  | "Ticking Clock Loop" by AppleCorey ([freesound.org/s/635061](https://freesound.org/people/AppleCorey/sounds/635061/)) | CC0                                                                                                                               |
+| `drumroll.mp3` | "Drum Roll, Please!" by HoBoTrails ([freesound.org/s/424927](https://freesound.org/people/HoBoTrails/sounds/424927/)) | CC0                                                                                                                               |
+
+Not used: Pixabay and Mixkit (their terms forbid redistributing the files, which a public repo
+does), FreePD (closed), Uppbeat (per-user account and credit codes).
+
 ## Code
 
 QR codes: [`uqr`](https://github.com/unjs/uqr) (MIT). The QR drawing and room-code alphabet

@@ -27,7 +27,10 @@ the room code or QR code. No app and no accounts. Players stay in the room betwe
 4. Short of players? **🤖 Add a bot** in the lobby: the laptop plays it, answering, lying,
    scribbling and voting after a few seconds' "thinking". Remove one with its ✕. (In Reverse a
    bot's "recording" is a beep, so you can't really decode its words.)
-5. Refreshing a phone keeps the player and their answers. If the TV's tab reloads, the room
+5. Refreshing a phone keeps the player and their answers.
+6. Music plays on the laptop/TV throughout: a lobby track, then writing, drawing and voting
+   tracks that crossfade with each phase, a ticking clock in the last 10 seconds, and stings
+   for reveals and winners. Adjust it with the 🎵 slider (🔊 mutes everything). If the TV's tab reloads, the room
    picks up where it was.
 
 Phones need **HTTPS** for the microphone (Reverse) and for sealed messages, so play on the

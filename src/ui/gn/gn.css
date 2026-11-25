@@ -2095,3 +2095,16 @@ body.gn textarea:focus {
 .gn-hint.center {
   text-align: center;
 }
+
+/* Music volume on the TV bar. */
+.gn-sound {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-left: 0.4em;
+}
+
+.gn-volume {
+  width: 6.5em;
+  accent-color: var(--a, var(--accent));
+}
